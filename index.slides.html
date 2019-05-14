@@ -13247,7 +13247,7 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">Technical aspects related to high-throughput calculations with ABINIT<a class="anchor-link" href="#Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">&#182;</a></h1><h3 id="M.-Giantomassi-and-the-AbiPy-group">M. Giantomassi and the AbiPy group<a class="anchor-link" href="#M.-Giantomassi-and-the-AbiPy-group">&#182;</a></h3><p>Boston MA, 3 March 2019</p>
+<h1 id="Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">Technical aspects related to high-throughput calculations with ABINIT<a class="anchor-link" href="#Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">&#182;</a></h1><h3 id="M.-Giantomassi-and-the-AbiPy-group">M. Giantomassi and the AbiPy group<a class="anchor-link" href="#M.-Giantomassi-and-the-AbiPy-group">&#182;</a></h3><p>9th international ABINIT developer workshop 20-22nd May 2019 - Louvain-la-Neuve, Belgium</p>
 <!-- link rel="stylesheet" href="reveal.js/css/theme/sky.css" id="theme" -->
 
 <p><img src="./assets/intro_logos.png" width="85%" heigh="15%" align="center"></p>
@@ -13262,42 +13262,16 @@ a.anchor-link {
 </li>
 </ul>
 <p>Use the Space key to navigate through all slides.</p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="./assets/abipy_logo.jpg" width="55%" align="center"></p>
-<h2 id="What-is-AbiPy?">What is AbiPy?<a class="anchor-link" href="#What-is-AbiPy?">&#182;</a></h2><h4 id="Python-package-for:">Python package for:<a class="anchor-link" href="#Python-package-for:">&#182;</a></h4><ul>
-<li>Generating ABINIT input files automatically</li>
-<li>Post-processing output results (<em>netcdf</em> and <em>text</em> files)</li>
-<li>Interfacing ABINIT with external tools (e.g. <a href="http://jp-minerals.org/vesta/en/">Vesta</a>)</li>
-<li>Creating and executing workflows (band structures, phonons, $GW$…)</li>
-</ul>
-<h4 id="Project:">Project:<a class="anchor-link" href="#Project:">&#182;</a></h4><ul>
-<li>Developed and maintained by the ABINIT community</li>
-<li>Used by developers to validate, profile and optimize ABINIT</li>
-<li>Hosted on <a href="https://github.com/abinit/abipy">github</a> </li>
-<li>Release under the GPLv2 license</li>
-</ul>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Why-python?">Why python?<a class="anchor-link" href="#Why-python?">&#182;</a></h2><ul>
-<li>Easy to use and to learn</li>
-<li>Great support for science (<a href="http://www.numpy.org/">numpy</a>, <a href="https://www.scipy.org/">scipy</a>, <a href="http://pandas.pydata.org/">pandas</a>, <a href="https://matplotlib.org/">matplotlib</a> …)</li>
-<li>Interactive environments (<a href="http://ipython.org/">ipython</a>, <a href="https://jupyter.org/">jupyter notebooks</a>, GUIs)</li>
-<li>More powerful and flexible than Fortran for implementing the high-level logic needed in modern ab-initio workflows</li>
-<li><a href="https://github.com/materialsproject">pymatgen</a> ecosystem and the <a href="https://www.materialsproject.org/">materials project database</a>…</li>
-</ul>
-<p><img src="./assets/pydata_stack.png" width="65%" align="center"></p>
-
+<!--
+In this talk, I will present the approach employed in AbiPy to implement automatic ABINIT calculations. More specifically, I will discuss how we employ
+YAML and netcdf files to exchange information between Fortran and Python,
+the logic used in AbiPy to parallelize and optimize calculations at runtime and
+the protocol used to handle possible errors during the ab-initio computation. I
+will also discuss how to use the Fortran API of ABINIT to generate netcdf files
+that can interoperate seamlessly with our high-throughput infrastructure. In the
+last part, I will present some of the technical problems we are still facing and
+discuss possible approaches to address these issues.
+-->
 </div>
 </div>
 </div></section><section>
@@ -13319,7 +13293,28 @@ a.anchor-link {
 <li>Glue code implemented in python</li>
 </ul>
 </li>
-<li><p>ABINIT and AbiPy communicate through <a href="https://www.unidata.ucar.edu/software/netcdf/docs/">netcdf</a> files</p>
+<li><p>ABINIT and AbiPy communicate through Yaml docs and <a href="https://www.unidata.ucar.edu/software/netcdf/docs/">netcdf</a> files</p>
+</li>
+<li><p>AbiPy employs this "protocol" to generate input files, handle errors, implement high-level logic</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Why-two-formats-for-communicating?">Why two formats for communicating?<a class="anchor-link" href="#Why-two-formats-for-communicating?">&#182;</a></h2><ul>
+<li><p>yaml docs</p>
+<ul>
+<li>Small documents for error message with context</li>
+<li>Used to access Abinit-computed quantities (<em>autoparal</em>, list of <em>perturbations</em>)</li>
+<li>Extracted from log file </li>
+<li>Easy to write with plain Fortran write</li>
+</ul>
+</li>
+<li><p>netcdf</p>
 <ul>
 <li>Portable binary format implemented in C</li>
 <li>Fortran/Python bindings and support for parallel MPI-IO (HDF5)</li>
@@ -13330,229 +13325,41 @@ a.anchor-link {
 
 </div>
 </div>
-</div><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Why-conda?">Why conda?<a class="anchor-link" href="#Why-conda?">&#182;</a></h2><ul>
-<li><p>Powerful package and environment management system for <u>any programming language</u>.
-Quite popular in the python community. Compatible with <em>pip install</em>.</p>
-</li>
-<li><p>Precompiled libraries ➝ no compilation of C/Fortran/C++ code required:</p>
-
-<pre><code>  conda install netcdf </code></pre>
-</li>
-<li><p>Less headaches when trying to install packages with many dependencies</p>
-</li>
-<li><p><u>Isolated</u> and <u>reproducible</u> environments can be created easily</p>
-</li>
-<li><p>Great tool for developers:</p>
-
-<pre><code>      conda create -n env3.7 python=3.7</code></pre>
-</li>
-<li><p>Most <em>conda</em> packages are friendly across Linux/MacOsX/Windows</p>
-</li>
-<li><p>Tons of packages available on the <a href="https://conda-forge.org/">conda-forge</a> channel</p>
-</li>
-</ul>
-<hr>
-
-<h3 id="If-you&#8217;re-still-not-convinced-about-using-conda...">If you&#8217;re still not convinced about using conda...<a class="anchor-link" href="#If-you&#8217;re-still-not-convinced-about-using-conda...">&#182;</a></h3>
-</div>
-</div>
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-to-install-Abinit-on-your-laptop-with-conda">How to install Abinit on your laptop with conda<a class="anchor-link" href="#How-to-install-Abinit-on-your-laptop-with-conda">&#182;</a></h2><h4 id="Download-and-install-miniconda-on-your-Linux-machine-with:">Download and install <em>miniconda</em> on your Linux machine with:<a class="anchor-link" href="#Download-and-install-miniconda-on-your-Linux-machine-with:">&#182;</a></h4>
-<pre><code>    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    bash Miniconda3-latest-Linux-x86_64.sh
-
-
-</code></pre>
-<h4 id="Source-your-.bashrc-file-to-activate-the-changes:">Source your <em>.bashrc</em> file to activate the changes:<a class="anchor-link" href="#Source-your-.bashrc-file-to-activate-the-changes:">&#182;</a></h4>
-<pre><code>    source ~/.bashrc
-
-</code></pre>
-<h4 id="Add-conda-forge-to-your-conda-channels:">Add <em>conda-forge</em> to your conda channels:<a class="anchor-link" href="#Add-conda-forge-to-your-conda-channels:">&#182;</a></h4>
-<pre><code>    conda config --add channels conda-forge
-
-</code></pre>
-<h4 id="Install-the-parallel-version-of-abinit-from-the-abinit-channel-with:">Install the parallel version of abinit from the <a href="https://anaconda.org/abinit/abinit">abinit channel</a> with:<a class="anchor-link" href="#Install-the-parallel-version-of-abinit-from-the-abinit-channel-with:">&#182;</a></h4>
-<pre><code>conda install abinit --channel abinit
-
-</code></pre>
-<hr>
-
-<p>Futher info at <a href="https://github.com/abinit/abiconda">https://github.com/abinit/abiconda</a></p>
-
-</div>
-</div>
-</div>
-</aside></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="AbiPy-documentation">AbiPy documentation<a class="anchor-link" href="#AbiPy-documentation">&#182;</a></h2><!--
-* http://abinit.github.io/abipy/index.html
-
-* Jupyter notebooks 
-* Gallery of matplotlib examples and flows
-* abitutorial github repo with additional examples
-
-
-<img src="./assets/abipy_doc_homepage.png" width="100%" align="center">
--->
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[448]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">embed</span> https://abinit.github.io/abipy/index.html
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[448]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-
-        <iframe
-            width="800"
-            height="400"
-            src="https://abinit.github.io/abipy/index.html"
-            frameborder="0"
-            allowfullscreen
-        ></iframe>
-        
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Jupyter-notebooks-with-examples-and-lessons">Jupyter notebooks with <a href="https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/index.ipynb">examples and lessons</a><a class="anchor-link" href="#Jupyter-notebooks-with-examples-and-lessons">&#182;</a></h2><!-- img src="./assets/abipy_notebooks.png" width="100%" align="center" -->
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[449]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">embed</span> https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/index.ipynb
+<h2 id="How-do-we-understand-that-the-job-completed-successfully?">How do we understand that the job completed successfully?<a class="anchor-link" href="#How-do-we-understand-that-the-job-completed-successfully?">&#182;</a></h2><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!FinalSummary</span>
+<span class="nt">program</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">abinit</span>
+<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8.11.6</span>
+<span class="nt">start_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:01:14 2019</span>
+<span class="nt">end_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:04:04 2019</span>
+<span class="nt">overall_cpu_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">168.8</span>
+<span class="nt">overall_wall_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">169.7</span>
+<span class="nt">exit_requested_by_user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span> 
+<span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">pseudos</span><span class="p">:</span> 
+    <span class="nt">Li  </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9517c0b7d24d4898578b8627ce68311d</span>
+    <span class="nt">F   </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14cf65a61ba7320a86892d2f062b1f44</span>
+<span class="nt">usepaw</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">mpi_procs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">omp_threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">num_warnings</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">num_comments</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">73</span>
+<span class="nn">...</span>
 </pre></div>
 
-    </div>
 </div>
 </div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[449]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-
-        <iframe
-            width="800"
-            height="400"
-            src="https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/index.ipynb"
-            frameborder="0"
-            allowfullscreen
-        ></iframe>
-        
 </div>
-
-</div>
-
-</div>
-</div>
-
-</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-do-we-need-to-automate-calculations?">What do we need to automate calculations?<a class="anchor-link" href="#What-do-we-need-to-automate-calculations?">&#182;</a></h2><ul>
-<li>Tools to parse and analyze output results</li>
-<li>python API to generate input files</li>
-<li><p>High-level logic for:</p>
-<ul>
-<li>Managing complicated workflows</li>
-<li>Exposing task parallelism (independent steps can be executed in parallel)</li>
-<li>Handling runtime errors and restarting calculations</li>
-<li>Saving final results in machine-readable format (e.g. databases)</li>
-</ul>
-</li>
-</ul>
-<p><img src="./assets/sdata201865-f2.jpg" width="50%" align="center"></p>
-<hr>
-
-<h3 id="Let's-discuss-the-different-parts-step-by-step&#8230;">Let's discuss the different parts step by step&#8230;<a class="anchor-link" href="#Let's-discuss-the-different-parts-step-by-step&#8230;">&#182;</a></h3>
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="./assets/Data-Analysis.jpg" width="95%" align="center"></p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="AbiPy-post-processing-tools">AbiPy post-processing tools<a class="anchor-link" href="#AbiPy-post-processing-tools">&#182;</a></h2><ul>
-<li><p>Main entry point:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abipy</span> <span class="kn">import</span> <span class="n">abilab</span>
-<span class="n">abifile</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="s2">&quot;filename.nc&quot;</span><span class="p">)</span>
+<h2 id="Abort-handled-by-the-developer">Abort handled by the developer<a class="anchor-link" href="#Abort-handled-by-the-developer">&#182;</a></h2><p></p><h4 id="Fortran">Fortran<a class="anchor-link" href="#Fortran">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">MSG_ERROR</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
 </pre></div>
-<p>where <em>filename.nc</em> is a <em>netcdf</em> file (support also text files e.g. <em>run.abo</em>, <em>run.log</em>, <em>out_DDB</em>)</p>
-</li>
-<li><p><em>abifile</em> is the <em>AbiFile</em> subclass associated to the given file extension:</p>
-<ol>
-<li>GSR.nc ➝ <em>GsrFile</em></li>
-<li>HIST.nc ➝ <em>HistFile</em></li>
-<li>More than 45 file extensions supported (see <code>abiopen.py --help</code>) </li>
-</ol>
-</li>
-</ul>
-<ul>
-<li><p>Command line interface: use <code>abiopen.py FILE</code> to:</p>
-<ul>
-<li>open the file inside the <a href="https://ipython.org/"><em>ipython</em></a> terminal</li>
-<li>print info to terminal (<code>--print</code> option)</li>
-<li>produce a predefined set of <em>matplotlib</em>  figures (<code>--expose</code> option)</li>
-<li>generate <a href="https://jupyter.org/">jupyter notebooks</a> (<code>--notebook</code> option)</li>
-</ul>
-</li>
+<h4 id="Yaml-doc-in-log-file">Yaml doc in log file<a class="anchor-link" href="#Yaml-doc-in-log-file">&#182;</a></h4><ul>
+<li>src_file and str_line added by CPP preprocessor</li>
+<li>message: Informative string for user, may be used by AbiPy for quick fixes</li>
 </ul>
 
 </div>
@@ -13561,55 +13368,52 @@ Quite popular in the python community. Compatible with <em>pip install</em>.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Before-we-start,-we-need-to-import-two-AbiPy-modules:">Before we start, we need to import two AbiPy modules:<a class="anchor-link" href="#Before-we-start,-we-need-to-import-two-AbiPy-modules:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[450]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">abipy</span> <span class="k">import</span> <span class="n">abilab</span>
-<span class="kn">import</span> <span class="nn">abipy.data</span> <span class="k">as</span> <span class="nn">abidata</span>
+<h4 id="Common-runtime-Errors">Common runtime Errors<a class="anchor-link" href="#Common-runtime-Errors">&#182;</a></h4><h4 id="Common-runtime-errors-are-associated-with-additional-metadata-and-actions-performed-by-the-code">Common runtime errors are associated with additional metadata and actions performed by the code<a class="anchor-link" href="#Common-runtime-errors-are-associated-with-additional-metadata-and-actions-performed-by-the-code">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
 </pre></div>
 
-    </div>
 </div>
 </div>
-
-</div>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Now-we-can-open-our-netcdf-file-with-abiopen">Now we can open our netcdf file with <em>abiopen</em><a class="anchor-link" href="#Now-we-can-open-our-netcdf-file-with-abiopen">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[451]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsr_kpath</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="s2">&quot;si_nscf_GSR.nc&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="c">! check dilatmx here and correct if necessary</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">usewvl</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
+<span class="k">   call </span><span class="n">chkdilatmx</span><span class="p">(</span><span class="n">dt_chkdilatmx</span><span class="p">,</span><span class="n">dilatmx</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">rprimd_orig</span><span class="p">,</span><span class="n">dilatmx_errmsg</span><span class="p">)</span>
+   <span class="err">_</span><span class="n">IBM6</span><span class="p">(</span><span class="s2">&quot;dilatxm_errmsg: &quot;</span><span class="o">//</span><span class="nb">TRIM</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">))</span>
+   <span class="k">if</span> <span class="p">(</span><span class="nb">LEN_TRIM</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
+<span class="k">     </span><span class="n">MSG_WARNING</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span>
+     <span class="n">nerr_dilatmx</span> <span class="o">=</span> <span class="n">nerr_dilatmx</span><span class="o">+</span><span class="mi">1</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">nerr_dilatmx</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span>
+       <span class="c">! Write last structure before aborting, so that we can restart from it.</span>
+       <span class="c">! zion is not available, but it&#39;s not useful here.</span>
+       <span class="k">if</span> <span class="p">(</span><span class="n">me</span> <span class="o">==</span> <span class="n">master</span><span class="p">)</span> <span class="k">then</span>
+         <span class="c">! Init crystal</span>
+         <span class="n">hist</span><span class="p">%</span><span class="n">ihist</span> <span class="o">=</span> <span class="n">abihist_findIndex</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+         <span class="k">call </span><span class="n">hist2var</span><span class="p">(</span><span class="n">acell</span><span class="p">,</span><span class="n">hist</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">natom</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">xred</span><span class="p">,</span><span class="n">DEBUG</span><span class="p">)</span>
+         <span class="k">call </span><span class="n">crystal_init</span><span class="p">(</span><span class="n">amu_curr</span><span class="p">,</span><span class="n">crystal</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">natom</span><span class="p">,&amp;</span>
+           <span class="n">npsp</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">ntypat</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">nsym</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">typat</span><span class="p">,</span><span class="n">xred</span><span class="p">,&amp;</span>
+           <span class="p">[(</span><span class="o">-</span><span class="n">one</span><span class="p">,</span> <span class="n">ii</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">ntypat</span><span class="p">)],</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">znucl</span><span class="p">,</span><span class="mi">2</span><span class="p">,.</span><span class="n">False</span><span class="p">.,.</span><span class="n">False</span><span class="p">.,</span><span class="s2">&quot;dilatmx_structure&quot;</span><span class="p">,&amp;</span>
+           <span class="n">symrel</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">symrel</span><span class="p">,</span><span class="n">tnons</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">tnons</span><span class="p">,</span><span class="n">symafm</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">symafm</span><span class="p">)</span>
+
+<span class="cp">#ifdef HAVE_NETCDF</span>
+         <span class="c">! Write netcdf file</span>
+         <span class="n">filename</span> <span class="o">=</span> <span class="n">strcat</span><span class="p">(</span><span class="n">filnam_ds4</span><span class="p">,</span> <span class="s2">&quot;_DILATMX_STRUCT.nc&quot;</span><span class="p">)</span>
+         <span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite_path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+<span class="cp">#endif</span>
+         <span class="k">call </span><span class="n">crystal</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
+       <span class="k">end if</span>
+<span class="k">       call </span><span class="n">xmpi_barrier</span><span class="p">(</span><span class="n">comm_cell</span><span class="p">)</span>
+       <span class="k">write</span> <span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s1">&#39;(a,i0,3a)&#39;</span><span class="p">)</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;Dilatmx has been exceeded too many times (&#39;</span><span class="p">,</span> <span class="n">nerr_dilatmx</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span><span class="n">ch10</span><span class="p">,</span> <span class="p">&amp;</span>
+        <span class="s1">&#39;Restart your calculation from larger lattice vectors and/or a larger dilatmx&#39;</span>
+       <span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
+     <span class="k">end if</span>
+<span class="k">   else</span>
+<span class="k">     </span><span class="n">nerr_dilatmx</span><span class="o">=</span><span class="mi">0</span>
+   <span class="k">end if</span>
+<span class="k"> end if</span>
 </pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">This function returns an <em>AbiFile</em> object provinding access to physical properties.<a class="anchor-link" href="#This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">&#182;</a></h4><p>Conventions:</p>
-<ul>
-<li><em>abifile.structure</em> ➝ crystalline structure (subclass of pymatgen <em>Structure</em>)</li>
-<li><em>abifile.ebands</em> ➝ electron band energies</li>
-<li><em>abifile.ebands.kpoints</em> ➝ list of k-points (k-path, IBZ) </li>
-<li><em>abifile.phbands</em> ➝ phonon frequencies and displacements</li>
-</ul>
-<p>Several AbiPy objects provide <em>plot</em> methods returning <a href="https://matplotlib.org/"><em>matplotlib</em></a> figures</p>
 
 </div>
 </div>
@@ -13617,18 +13421,21 @@ Quite popular in the python community. Compatible with <em>pip install</em>.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Other-files-supported-by-AbiPy">Other files supported by AbiPy<a class="anchor-link" href="#Other-files-supported-by-AbiPy">&#182;</a></h2><ul>
-<li><em>GSR.nc</em> ➝ Ground-state results produced by SCF/NSCF runs</li>
-<li><em>HIST.nc</em> ➝ Structural relaxation and molecular dynamics</li>
-<li><em>FATBANDS.nc</em> ➝ Fatbands and LM-projected DOS for electrons</li>
-<li><em>DDB</em>: ➝ dynamical matrix, Born effective charges, elastic constants…</li>
-<li><em>SIGRES.nc</em> ➝ $GW$ calculations ($\Sigma^{e-e}$ self-energy)</li>
-<li><em>MDF.nc</em> ➝ Bethe-Salpeter calculations</li>
-<li><em>ABIWAN.nc</em> ➝ <em>netcdf</em> file produced by Abinit with wannier90 results </li>
-<li><em>SIGEPH.nc</em> ➝ electron-phonon self-energy ($\Sigma^{e-ph}$)</li>
-<li>…</li>
+<h2 id="Clean-exit-with---timeline-and-smart-io-mode">Clean exit with <em>--timeline</em> and smart-io mode<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode">&#182;</a></h2><div class="highlight"><pre><span></span>cat job.sh
+
+<span class="c1">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=48</span>
+<span class="c1">#SBATCH --time=12:00:00</span>
+
+abinit -timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
+</pre></div>
+<ul>
+<li>Available for iterative algorithms (Relax, Scf, Nscf?)</li>
+<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching</li>
+<li>Abipy will restart the job from the previous results</li>
+<li>timelimit and prtwf -1 to reduce IO-pressure and avoid disk-quota hell </li>
 </ul>
-<h4 id="Jupter-notebooks-with-examples-available--here">Jupter notebooks with examples available  <a href="https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/index.ipynb#Output-files-supported-by-AbiPy">here</a><a class="anchor-link" href="#Jupter-notebooks-with-examples-available--here">&#182;</a></h4>
+
 </div>
 </div>
 </div></section></section><section><section>
@@ -13695,171 +13502,6 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 -->
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-download-a-DDB-file-from-the-materials-project-database:">To download a DDB file from the materials project database:<a class="anchor-link" href="#To-download-a-DDB-file-from-the-materials-project-database:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[475]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ddb</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">DdbFile</span><span class="o">.</span><span class="n">from_mpid</span><span class="p">(</span><span class="s2">&quot;mp-1009129&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ddb</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>================================= File Info =================================
-Name: mp-1009129qy153fif_DDB
-Directory: /var/folders/89/47k8wfdj11x035svqf8qnl4m0000gn/T
-Size: 218.73 kb
-Access Time: Fri Mar  1 15:43:15 2019
-Modification Time: Fri Mar  1 15:43:15 2019
-Change Time: Fri Mar  1 15:43:15 2019
-
-================================= Structure =================================
-Full Formula (Mg1 O1)
-Reduced Formula: MgO
-abc   :   2.908638   2.908638   2.656848
-angles:  90.000000  90.000000 120.000000
-Sites (2)
-  #  SP           a         b    c
----  ----  --------  --------  ---
-  0  Mg    0         0         0
-  1  O     0.333333  0.666667  0.5
-
-Abinit Spacegroup: spgid: 0, num_spatial_symmetries: 12, has_timerev: True, symmorphic: False
-
-================================== DDB Info ==================================
-
-Number of q-points in DDB: 72
-guessed_ngqpt: [ 9  9 10] (guess for the q-mesh divisions made by AbiPy)
-ecut = 44.000000, ecutsm = 0.000000, nkpt = 405, nsym = 12, usepaw = 0
-nsppol 1, nspinor 1, nspden 1, ixc = -116133, occopt = 1, tsmear = 0.010000
-
-Has total energy: False, Has forces: False
-Has stress tensor: False
-
-Has (at least one) atomic pertubation: True
-Has (at least one diagonal) electric-field perturbation: True
-Has (at least one) Born effective charge: True
-Has (all) strain terms: False
-Has (all) internal strain terms: False
-Has (all) piezoelectric terms: False
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Once-we-have-a-DdbFile-object,-we-can-call-anaddb-to-compute-phonon-bands-and-DOS:">Once we have a <em>DdbFile</em> object, we can call <em>anaddb</em> to compute phonon bands and DOS:<a class="anchor-link" href="#Once-we-have-a-DdbFile-object,-we-can-call-anaddb-to-compute-phonon-bands-and-DOS:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[476]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Return PHBST and PHDOS netcdf files.</span>
-<span class="n">phbstnc</span><span class="p">,</span> <span class="n">phdosnc</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span>
-    <span class="n">ndivsm</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nqsmall</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">lo_to_splitting</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">asr</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> 
-    <span class="n">chneut</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dipdip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dos_method</span><span class="o">=</span><span class="s2">&quot;tetra&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="and-extract-the-phonon-bands-and-the-phonon-DOS-objects-with:">and extract the phonon bands and the phonon DOS objects with:<a class="anchor-link" href="#and-extract-the-phonon-bands-and-the-phonon-DOS-objects-with:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[477]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phbands</span> <span class="o">=</span> <span class="n">phbstnc</span><span class="o">.</span><span class="n">phbands</span>
-<span class="n">phdos</span> <span class="o">=</span> <span class="n">phdosnc</span><span class="o">.</span><span class="n">phdos</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[478]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">phbands</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>================================= Structure =================================
-Full Formula (Mg1 O1)
-Reduced Formula: MgO
-abc   :   2.908638   2.908638   2.656848
-angles:  90.000000  90.000000 120.000000
-Sites (2)
-  #  SP           a         b    c
----  ----  --------  --------  ---
-  0  Mg    0         0         0
-  1  O     0.333333  0.666667  0.5
-
-Abinit Spacegroup: spgid: 0, num_spatial_symmetries: 12, has_timerev: True, symmorphic: False
-
-Number of q-points: 345
-Atomic mass units: {12.0: 24.305, 8.0: 15.9994}
-Has non-analytical contribution for q --&gt; 0: True
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13890,7 +13532,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[491]:</div>
+<div class="prompt input_prompt">In&nbsp;[91]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">AbinitInput</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">)</span>
@@ -13910,7 +13552,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[492]:</div>
+<div class="prompt input_prompt">In&nbsp;[92]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ecut&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
@@ -13927,7 +13569,7 @@ Has non-analytical contribution for q --&gt; 0: True
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[492]:</div>
+    <div class="prompt output_prompt">Out[92]:</div>
 
 
 
@@ -13951,7 +13593,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[493]:</div>
+<div class="prompt input_prompt">In&nbsp;[93]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">kptopt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  
@@ -13973,7 +13615,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[494]:</div>
+<div class="prompt input_prompt">In&nbsp;[94]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_autokmesh</span><span class="p">(</span><span class="n">nksmall</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -13989,7 +13631,7 @@ Has non-analytical contribution for q --&gt; 0: True
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[494]:</div>
+    <div class="prompt output_prompt">Out[94]:</div>
 
 
 
@@ -14032,7 +13674,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[496]:</div>
+<div class="prompt input_prompt">In&nbsp;[96]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">formula</span><span class="p">)</span>
@@ -14070,7 +13712,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[497]:</div>
+<div class="prompt input_prompt">In&nbsp;[97]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">pseudo</span> <span class="ow">in</span> <span class="n">inp</span><span class="o">.</span><span class="n">pseudos</span><span class="p">:</span>
@@ -14119,28 +13761,21 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[498]:</div>
+<div class="prompt input_prompt">In&nbsp;[98]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pseudo_dojo.core.pseudos</span> <span class="k">import</span> <span class="n">OfficialDojoTable</span>
-<span class="n">pseudo_table</span> <span class="o">=</span> <span class="n">OfficialDojoTable</span><span class="o">.</span><span class="n">from_dojodir</span><span class="p">(</span><span class="s1">&#39;ONCVPSP-PBEsol-PDv0.4&#39;</span><span class="p">,</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from pseudo_dojo.core.pseudos import OfficialDojoTable</span>
+<span class="c1">#pseudo_table = OfficialDojoTable.from_dojodir(&#39;ONCVPSP-PBEsol-PDv0.4&#39;,&#39;standard&#39;)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">Inside the notebook, one gets the HTML representation with links to the documentation:<a class="anchor-link" href="#Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">&#182;</a></h4>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[499]:</div>
+<div class="prompt input_prompt">In&nbsp;[99]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span>
@@ -14156,7 +13791,7 @@ Has non-analytical contribution for q --&gt; 0: True
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[499]:</div>
+    <div class="prompt output_prompt">Out[99]:</div>
 
 
 
@@ -14179,7 +13814,7 @@ Has non-analytical contribution for q --&gt; 0: True
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[500]:</div>
+<div class="prompt input_prompt">In&nbsp;[100]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_kpath</span><span class="p">(</span><span class="n">ndivsm</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -14195,7 +13830,7 @@ Has non-analytical contribution for q --&gt; 0: True
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[500]:</div>
+    <div class="prompt output_prompt">Out[100]:</div>
 
 
 
@@ -14300,8 +13935,7 @@ providing all the information required to execute/submit Abinit jobs:</p>
 
 </div>
 </div>
-</div><aside class="notes">
-
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -14340,8 +13974,59 @@ providing all the information required to execute/submit Abinit jobs:</p>
 
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="To-get-the-list-of-k-points-in-the-IBZ-as-computed-by-Abinit:">To get the list of k-points in the IBZ as computed by Abinit:<a class="anchor-link" href="#To-get-the-list-of-k-points-in-the-IBZ-as-computed-by-Abinit:">&#182;</a></h4>
 </div>
-</aside></section><section>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[101]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ibz</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">abiget_ibz</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of k-points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Weights normalized to:&quot;</span><span class="p">,</span> <span class="n">ibz</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="n">ibz</span><span class="o">.</span><span class="n">weights</span><span class="p">[:</span><span class="n">n</span><span class="p">])):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;kpt:&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;weight:&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of k-points: 198
+Weights normalized to: 198.0
+0 kpt: [0. 0. 0.] weight: 1.0
+1 kpt: [0.01785714 0.         0.01785714] weight: 1.0
+2 kpt: [0.03571429 0.         0.03571429] weight: 1.0
+3 kpt: [0.05357143 0.         0.05357143] weight: 1.0
+4 kpt: [0.07142857 0.         0.07142857] weight: 1.0
+...
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -14351,7 +14036,7 @@ providing all the information required to execute/submit Abinit jobs:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[503]:</div>
+<div class="prompt input_prompt">In&nbsp;[102]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;paral_kgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -14375,20 +14060,20 @@ providing all the information required to execute/submit Abinit jobs:</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Best efficiency:
- {&#39;efficiency&#39;: 0.98,
+ {&#39;efficiency&#39;: 0.8465,
  &#39;mem_per_cpu&#39;: 0.0,
- &#39;mpi_ncpus&#39;: 3,
+ &#39;mpi_ncpus&#39;: 5,
  &#39;omp_ncpus&#39;: 1,
- &#39;tot_ncpus&#39;: 3,
+ &#39;tot_ncpus&#39;: 5,
  &#39;vars&#39;: {&#39;bandpp&#39;: 1,
           &#39;npband&#39;: 1,
           &#39;npfft&#39;: 1,
           &#39;npimage&#39;: 1,
-          &#39;npkpt&#39;: 3,
+          &#39;npkpt&#39;: 5,
           &#39;npspinor&#39;: 1}}
 
 Best speedup:
- {&#39;efficiency&#39;: 0.969,
+ {&#39;efficiency&#39;: 0.8465,
  &#39;mem_per_cpu&#39;: 0.0,
  &#39;mpi_ncpus&#39;: 5,
  &#39;omp_ncpus&#39;: 1,
@@ -14417,7 +14102,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[504]:</div>
+<div class="prompt input_prompt">In&nbsp;[103]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_phperts</span><span class="p">(</span><span class="n">qpt</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -14433,7 +14118,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[504]:</div>
+    <div class="prompt output_prompt">Out[103]:</div>
 
 
 
@@ -14458,7 +14143,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[505]:</div>
+<div class="prompt input_prompt">In&nbsp;[104]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_strainperts</span><span class="p">()</span>
@@ -14474,7 +14159,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[505]:</div>
+    <div class="prompt output_prompt">Out[104]:</div>
 
 
 
@@ -14524,7 +14209,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[506]:</div>
+<div class="prompt input_prompt">In&nbsp;[105]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">MultiDataset</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">,</span> <span class="n">ndtset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -14546,7 +14231,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[507]:</div>
+<div class="prompt input_prompt">In&nbsp;[106]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ecut&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">multi</span><span class="p">)</span>
@@ -14562,7 +14247,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[507]:</div>
+    <div class="prompt output_prompt">Out[106]:</div>
 
 
 
@@ -14586,7 +14271,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[508]:</div>
+<div class="prompt input_prompt">In&nbsp;[107]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">tsmear</span><span class="o">=</span><span class="mf">0.004</span><span class="p">)</span>
@@ -14607,7 +14292,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[509]:</div>
+<div class="prompt input_prompt">In&nbsp;[108]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span><span class="o">.</span><span class="n">get_vars_dataframe</span><span class="p">(</span><span class="s2">&quot;ngkpt&quot;</span><span class="p">,</span> <span class="s2">&quot;tsmear&quot;</span><span class="p">)</span>
@@ -14623,7 +14308,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[509]:</div>
+    <div class="prompt output_prompt">Out[108]:</div>
 
 
 
@@ -14681,7 +14366,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[510]:</div>
+<div class="prompt input_prompt">In&nbsp;[109]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gs1</span><span class="p">,</span> <span class="n">gs2</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">split_datasets</span><span class="p">()</span>
@@ -14716,257 +14401,6 @@ Best speedup:
 
 </code></pre>
 <h3 id="Some-examples...">Some examples...<a class="anchor-link" href="#Some-examples...">&#182;</a></h3>
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Input-file-for-band-structure-calculation-+-DOS">Input file for band structure calculation + DOS<a class="anchor-link" href="#Input-file-for-band-structure-calculation-+-DOS">&#182;</a></h3><ol>
-<li>GS run to get the density </li>
-<li>NSCF run along high-symmetry <strong>k</strong>-path</li>
-<li>NSCF run with <strong>k</strong>-mesh to compute the DOS</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[511]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">ebands_input</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> 
-                            <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">,</span>
-                            <span class="n">ecut</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> 
-                            <span class="n">spin_mode</span><span class="o">=</span><span class="s2">&quot;unpolarized&quot;</span><span class="p">,</span> 
-                            <span class="n">smearing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                            <span class="n">dos_kppa</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
-
-<span class="n">multi</span><span class="o">.</span><span class="n">get_vars_dataframe</span><span class="p">(</span><span class="s2">&quot;kptopt&quot;</span><span class="p">,</span> <span class="s2">&quot;iscf&quot;</span><span class="p">,</span> <span class="s2">&quot;ngkpt&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[511]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>kptopt</th>
-      <th>iscf</th>
-      <th>ngkpt</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>dataset 0</th>
-      <td>1</td>
-      <td>None</td>
-      <td>[8, 8, 8]</td>
-    </tr>
-    <tr>
-      <th>dataset 1</th>
-      <td>-11</td>
-      <td>-2</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <th>dataset 2</th>
-      <td>1</td>
-      <td>-2</td>
-      <td>[14, 14, 14]</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="$GW$-calculations-with-the-plasmon-pole-model.-The-calculation-consists-of:">$GW$ calculations with the plasmon-pole model. The calculation consists of:<a class="anchor-link" href="#$GW$-calculations-with-the-plasmon-pole-model.-The-calculation-consists-of:">&#182;</a></h4><ol>
-<li>GS run to compute the density </li>
-<li>nscf-run to produce a WFK file with <em>nscf_nband</em> states</li>
-<li>Input files to compute the screening ($W$) and the self-energy ($\Sigma^{e-e} = GW$)</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[512]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">g0w0_with_ppmodel_inputs</span><span class="p">(</span>
-    <span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">,</span> 
-    <span class="n">kppa</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nscf_nband</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">ecuteps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ecutsigx</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ecut</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> 
-    <span class="n">spin_mode</span><span class="o">=</span><span class="s2">&quot;unpolarized&quot;</span><span class="p">)</span>
-
-<span class="n">multi</span><span class="o">.</span><span class="n">get_vars_dataframe</span><span class="p">(</span><span class="s2">&quot;optdriver&quot;</span><span class="p">,</span> <span class="s2">&quot;ngkpt&quot;</span><span class="p">,</span> <span class="s2">&quot;nband&quot;</span><span class="p">,</span> <span class="s2">&quot;ecuteps&quot;</span><span class="p">,</span> <span class="s2">&quot;ecutsigx&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[512]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>optdriver</th>
-      <th>ngkpt</th>
-      <th>nband</th>
-      <th>ecuteps</th>
-      <th>ecutsigx</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>dataset 0</th>
-      <td>None</td>
-      <td>[8, 8, 8]</td>
-      <td>14</td>
-      <td>None</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <th>dataset 1</th>
-      <td>None</td>
-      <td>[8, 8, 8]</td>
-      <td>50</td>
-      <td>None</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <th>dataset 2</th>
-      <td>3</td>
-      <td>[8, 8, 8]</td>
-      <td>50</td>
-      <td>2</td>
-      <td>None</td>
-    </tr>
-    <tr>
-      <th>dataset 3</th>
-      <td>4</td>
-      <td>[8, 8, 8]</td>
-      <td>50</td>
-      <td>2</td>
-      <td>4</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li><em>nscf_nband</em>  ➝ number of bands in $GW$ (occ + empty)</li>
-<li><em>ecuteps</em> ➝ planewave cutoff for $W_{G, G'}$ in Hartree </li>
-<li><em>ecutsigx</em> ➝ cutoff energy for the exchange part $\Sigma_x$</li>
-<li><em>kppa</em> ➝ k-point sampling (#kpts per reciprocal atom)</li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Command-line-interface">Command line interface<a class="anchor-link" href="#Command-line-interface">&#182;</a></h2><ul>
-<li><em>abistruct.py</em> ➝ Operate on crystalline structures read from file</li>
-<li><em>abiopen.py</em> ➝ Open output files inside Ipython session</li>
-<li><em>abicomp.py</em> ➝ Compare multiple files (convergence studies)</li>
-<li><em>abiview.py</em> ➝ Quick visualization of output files</li>
-<li><em>abinp.py</em> ➝ Generate input files for typical calculations</li>
-</ul>
-<p>Use e.g.</p>
-<ul>
-<li><code>abistruct.py --help</code> for manpage</li>
-<li><code>abistruct.py COMMAND --help</code> for help about <code>COMMAND</code></li>
-</ul>
-<hr>
-
-<p>HTML documentation available at <a href="http://abinit.github.io/abipy/scripts/index.html">http://abinit.github.io/abipy/scripts/index.html</a></p>
-<h3 id="Examples">Examples<a class="anchor-link" href="#Examples">&#182;</a></h3><div class="highlight"><pre><span></span>abistruct.py spglib si_scf_GSR.nc
-abistruct.py convert si_scf_GSR.nc -f cif
-abiopen.py si_scf_GSR.nc --print
-</pre></div>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="assets/managing-workflow.jpg"></p>
-
 </div>
 </div>
 </div></section></section><section><section>
@@ -15048,7 +14482,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[519]:</div>
+<div class="prompt input_prompt">In&nbsp;[112]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">abipy</span> <span class="k">import</span> <span class="n">flowtk</span>
@@ -15070,7 +14504,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[520]:</div>
+<div class="prompt input_prompt">In&nbsp;[113]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">()</span>
@@ -15086,7 +14520,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[520]:</div>
+    <div class="prompt output_prompt">Out[113]:</div>
 
 
 
@@ -15094,15 +14528,15 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: flow Pages: 1 -->
-<svg width="273pt" height="66pt"
- viewBox="0.00 0.00 272.99 66.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(12.4927 40)">
+<svg width="252pt" height="66pt"
+ viewBox="0.00 0.00 251.99 66.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(11.9927 40)">
 <title>flow</title>
-<polygon fill="white" stroke="none" points="-12.4927,26 -12.4927,-40 260.493,-40 260.493,26 -12.4927,26"/>
-<text text-anchor="start" x="-0.492676" y="15.2" font-family="Times,serif" font-size="14.00">Flow, node_id=387420, workdir=hello_flow</text>
+<polygon fill="#ffffff" stroke="transparent" points="-11.9927,26 -11.9927,-40 239.9927,-40 239.9927,26 -11.9927,26"/>
+<text text-anchor="start" x=".0073" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
 </g>
 </svg>
 
@@ -15123,7 +14557,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div></section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[521]:</div>
+<div class="prompt input_prompt">In&nbsp;[114]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_scf_nscf_inputs</span><span class="p">():</span>
@@ -15168,7 +14602,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[522]:</div>
+<div class="prompt input_prompt">In&nbsp;[115]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">abipy.abio.factories</span> <span class="k">import</span> <span class="n">ebands_input</span>
@@ -15189,7 +14623,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[523]:</div>
+<div class="prompt input_prompt">In&nbsp;[116]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">scf_input</span><span class="p">,</span> <span class="n">nscf_input</span> <span class="o">=</span> <span class="n">make_scf_nscf_inputs</span><span class="p">()</span>
@@ -15208,7 +14642,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[523]:</div>
+    <div class="prompt output_prompt">Out[116]:</div>
 
 
 
@@ -15216,24 +14650,26 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: flow Pages: 1 -->
-<svg width="273pt" height="104pt"
- viewBox="0.00 0.00 272.99 104.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(12.4927 78)">
+<svg width="252pt" height="104pt"
+ viewBox="0.00 0.00 251.99 104.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(11.9927 78)">
 <title>flow</title>
-<polygon fill="white" stroke="none" points="-12.4927,26 -12.4927,-78 260.493,-78 260.493,26 -12.4927,26"/>
-<text text-anchor="start" x="-0.492676" y="15.2" font-family="Times,serif" font-size="14.00">Flow, node_id=387420, workdir=hello_flow</text>
-<g id="clust1" class="cluster"><title>clusterw0</title>
-<path fill="#e0eeee" stroke="black" d="M98.2381,0.359112C98.2381,0.359112 150.238,0.359112 150.238,0.359112 156.238,0.359112 162.238,-5.64089 162.238,-11.6409 162.238,-11.6409 162.238,-61.6409 162.238,-61.6409 162.238,-67.6409 156.238,-73.6409 150.238,-73.6409 150.238,-73.6409 98.2381,-73.6409 98.2381,-73.6409 92.2381,-73.6409 86.2381,-67.6409 86.2381,-61.6409 86.2381,-61.6409 86.2381,-11.6409 86.2381,-11.6409 86.2381,-5.64089 92.2381,0.359112 98.2381,0.359112"/>
-<text text-anchor="middle" x="124.238" y="-58.4409" font-family="Times,serif" font-size="14.00">Work (w0)</text>
+<polygon fill="#ffffff" stroke="transparent" points="-11.9927,26 -11.9927,-78 239.9927,-78 239.9927,26 -11.9927,26"/>
+<text text-anchor="start" x=".0073" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
+<g id="clust1" class="cluster">
+<title>clusterw0</title>
+<path fill="#e0eeee" stroke="#000000" d="M88.2381,.3591C88.2381,.3591 140.2381,.3591 140.2381,.3591 146.2381,.3591 152.2381,-5.6409 152.2381,-11.6409 152.2381,-11.6409 152.2381,-61.6409 152.2381,-61.6409 152.2381,-67.6409 146.2381,-73.6409 140.2381,-73.6409 140.2381,-73.6409 88.2381,-73.6409 88.2381,-73.6409 82.2381,-73.6409 76.2381,-67.6409 76.2381,-61.6409 76.2381,-61.6409 76.2381,-11.6409 76.2381,-11.6409 76.2381,-5.6409 82.2381,.3591 88.2381,.3591"/>
+<text text-anchor="middle" x="114.2381" y="-58.4409" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
 </g>
 <!-- w0_t0 -->
-<g id="node1" class="node"><title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="124.476" cy="-25.2818" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="124.476" y="-26.8818" font-family="Times,serif" font-size="8.00">w0_t0</text>
-<text text-anchor="middle" x="124.476" y="-18.8818" font-family="Times,serif" font-size="8.00">ScfTask</text>
+<g id="node1" class="node">
+<title>w0_t0</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="114.4762" cy="-25.2818" rx="27.8878" ry="18"/>
+<text text-anchor="middle" x="114.4762" y="-26.8818" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
+<text text-anchor="middle" x="114.4762" y="-18.8818" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
 </g>
 </g>
 </svg>
@@ -15255,7 +14691,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[524]:</div>
+<div class="prompt input_prompt">In&nbsp;[117]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -15271,13 +14707,13 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[524]:</div>
+    <div class="prompt output_prompt">Out[117]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;Work, node_id=387421, workdir=hello_flow/w0&gt;</pre>
+<pre>&lt;Work, node_id=567, workdir=hello_flow/w0&gt;</pre>
 </div>
 
 </div>
@@ -15295,7 +14731,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[525]:</div>
+<div class="prompt input_prompt">In&nbsp;[118]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -15311,13 +14747,13 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[525]:</div>
+    <div class="prompt output_prompt">Out[118]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ScfTask, node_id=387422, workdir=hello_flow/w0/t0&gt;</pre>
+<pre>&lt;ScfTask, node_id=568, workdir=hello_flow/w0/t0&gt;</pre>
 </div>
 
 </div>
@@ -15339,7 +14775,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[526]:</div>
+<div class="prompt input_prompt">In&nbsp;[119]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="o">.</span><span class="n">register_nscf_task</span><span class="p">(</span><span class="n">nscf_input</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="p">{</span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">},</span> 
@@ -15358,7 +14794,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[526]:</div>
+    <div class="prompt output_prompt">Out[119]:</div>
 
 
 
@@ -15366,36 +14802,40 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: flow Pages: 1 -->
-<svg width="273pt" height="120pt"
- viewBox="0.00 0.00 272.99 120.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="261pt" height="120pt"
+ viewBox="0.00 0.00 260.51 120.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 116)">
 <title>flow</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-116 268.985,-116 268.985,4 -4,4"/>
-<text text-anchor="start" x="8" y="-6.8" font-family="Times,serif" font-size="14.00">Flow, node_id=387420, workdir=hello_flow</text>
-<g id="clust1" class="cluster"><title>clusterw0</title>
-<path fill="#e0eeee" stroke="black" d="M45.2393,-30C45.2393,-30 219.746,-30 219.746,-30 225.746,-30 231.746,-36 231.746,-42 231.746,-42 231.746,-92 231.746,-92 231.746,-98 225.746,-104 219.746,-104 219.746,-104 45.2393,-104 45.2393,-104 39.2393,-104 33.2393,-98 33.2393,-92 33.2393,-92 33.2393,-42 33.2393,-42 33.2393,-36 39.2393,-30 45.2393,-30"/>
-<text text-anchor="middle" x="132.493" y="-88.8" font-family="Times,serif" font-size="14.00">Work (w0)</text>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-116 256.5067,-116 256.5067,4 -4,4"/>
+<text text-anchor="start" x="12.2607" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
+<g id="clust1" class="cluster">
+<title>clusterw0</title>
+<path fill="#e0eeee" stroke="#000000" d="M20,-30C20,-30 232.5067,-30 232.5067,-30 238.5067,-30 244.5067,-36 244.5067,-42 244.5067,-42 244.5067,-92 244.5067,-92 244.5067,-98 238.5067,-104 232.5067,-104 232.5067,-104 20,-104 20,-104 14,-104 8,-98 8,-92 8,-92 8,-42 8,-42 8,-36 14,-30 20,-30"/>
+<text text-anchor="middle" x="126.2533" y="-88.8" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
 </g>
 <!-- w0_t0 -->
-<g id="node1" class="node"><title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="69.1832" cy="-56" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="69.1832" y="-57.6" font-family="Times,serif" font-size="8.00">w0_t0</text>
-<text text-anchor="middle" x="69.1832" y="-49.6" font-family="Times,serif" font-size="8.00">ScfTask</text>
+<g id="node1" class="node">
+<title>w0_t0</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="43.9439" cy="-56" rx="27.8878" ry="18"/>
+<text text-anchor="middle" x="43.9439" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
+<text text-anchor="middle" x="43.9439" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
 </g>
 <!-- w0_t1 -->
-<g id="node2" class="node"><title>w0_t1</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="192.823" cy="-56" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="192.823" y="-57.6" font-family="Times,serif" font-size="8.00">w0_t1</text>
-<text text-anchor="middle" x="192.823" y="-49.6" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node2" class="node">
+<title>w0_t1</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="205.5834" cy="-56" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="205.5834" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t1</text>
+<text text-anchor="middle" x="205.5834" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- w0_t0&#45;&gt;w0_t1 -->
-<g id="edge1" class="edge"><title>w0_t0&#45;&gt;w0_t1</title>
-<path fill="none" stroke="#ff0000" d="M97.179,-56C113.093,-56 133.538,-56 151.351,-56"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="151.481,-59.5001 161.481,-56 151.481,-52.5001 151.481,-59.5001"/>
-<text text-anchor="middle" x="129.513" y="-58.8" font-family="Times,serif" font-size="14.00">DEN</text>
+<g id="edge1" class="edge">
+<title>w0_t0&#45;&gt;w0_t1</title>
+<path fill="none" stroke="#ff0000" d="M72.0993,-56C97.5556,-56 135.3585,-56 164.2429,-56"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="164.4417,-59.5001 174.4416,-56 164.4416,-52.5001 164.4417,-59.5001"/>
+<text text-anchor="middle" x="123.274" y="-58.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
 </g>
 </g>
 </svg>
@@ -15417,7 +14857,7 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[527]:</div>
+<div class="prompt input_prompt">In&nbsp;[120]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -15438,8 +14878,8 @@ To explain in more details the syntax and the API used in AbiPy to build a flow 
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;ScfTask, node_id=387422, workdir=hello_flow/w0/t0&gt;
-&lt;NscfTask, node_id=387423, workdir=hello_flow/w0/t1&gt;
+<pre>&lt;ScfTask, node_id=568, workdir=hello_flow/w0/t0&gt;
+&lt;NscfTask, node_id=569, workdir=hello_flow/w0/t1&gt;
 </pre>
 </div>
 </div>
@@ -15478,7 +14918,7 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[528]:</div>
+<div class="prompt input_prompt">In&nbsp;[121]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">t1</span> <span class="o">=</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
@@ -15502,7 +14942,7 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[528]:</div>
+    <div class="prompt output_prompt">Out[121]:</div>
 
 
 
@@ -15510,54 +14950,61 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: flow Pages: 1 -->
-<svg width="351pt" height="170pt"
- viewBox="0.00 0.00 351.46 170.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="427pt" height="170pt"
+ viewBox="0.00 0.00 427.46 170.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 166)">
 <title>flow</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-166 347.464,-166 347.464,4 -4,4"/>
-<text text-anchor="start" x="47.2391" y="-6.8" font-family="Times,serif" font-size="14.00">Flow, node_id=387420, workdir=hello_flow</text>
-<g id="clust1" class="cluster"><title>clusterw0</title>
-<path fill="#e0eeee" stroke="black" d="M20,-30C20,-30 323.464,-30 323.464,-30 329.464,-30 335.464,-36 335.464,-42 335.464,-42 335.464,-142 335.464,-142 335.464,-148 329.464,-154 323.464,-154 323.464,-154 20,-154 20,-154 14,-154 8,-148 8,-142 8,-142 8,-42 8,-42 8,-36 14,-30 20,-30"/>
-<text text-anchor="middle" x="171.732" y="-138.8" font-family="Times,serif" font-size="14.00">Work (w0)</text>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-166 423.4635,-166 423.4635,4 -4,4"/>
+<text text-anchor="start" x="95.7391" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
+<g id="clust1" class="cluster">
+<title>clusterw0</title>
+<path fill="#e0eeee" stroke="#000000" d="M20,-30C20,-30 399.4635,-30 399.4635,-30 405.4635,-30 411.4635,-36 411.4635,-42 411.4635,-42 411.4635,-142 411.4635,-142 411.4635,-148 405.4635,-154 399.4635,-154 399.4635,-154 20,-154 20,-154 14,-154 8,-148 8,-142 8,-142 8,-42 8,-42 8,-36 14,-30 20,-30"/>
+<text text-anchor="middle" x="209.7318" y="-138.8" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
 </g>
 <!-- w0_t0 -->
-<g id="node1" class="node"><title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="43.9439" cy="-81" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="43.9439" y="-82.6" font-family="Times,serif" font-size="8.00">w0_t0</text>
-<text text-anchor="middle" x="43.9439" y="-74.6" font-family="Times,serif" font-size="8.00">ScfTask</text>
+<g id="node1" class="node">
+<title>w0_t0</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="43.9439" cy="-92" rx="27.8878" ry="18"/>
+<text text-anchor="middle" x="43.9439" y="-93.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
+<text text-anchor="middle" x="43.9439" y="-85.6" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
 </g>
 <!-- w0_t1 -->
-<g id="node2" class="node"><title>w0_t1</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="167.583" cy="-56" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="167.583" y="-57.6" font-family="Times,serif" font-size="8.00">w0_t1</text>
-<text text-anchor="middle" x="167.583" y="-49.6" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node2" class="node">
+<title>w0_t1</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="205.5834" cy="-56" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="205.5834" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t1</text>
+<text text-anchor="middle" x="205.5834" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- w0_t0&#45;&gt;w0_t1 -->
-<g id="edge1" class="edge"><title>w0_t0&#45;&gt;w0_t1</title>
-<path fill="none" stroke="#ff0000" d="M70.7405,-75.6981C87.4516,-72.2636 109.514,-67.7292 128.258,-63.8768"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="129.185,-67.2596 138.275,-61.818 127.775,-60.4029 129.185,-67.2596"/>
-<text text-anchor="middle" x="104.274" y="-74.8" font-family="Times,serif" font-size="14.00">DEN</text>
+<g id="edge1" class="edge">
+<title>w0_t0&#45;&gt;w0_t1</title>
+<path fill="none" stroke="#ff0000" d="M70.6353,-86.0553C96.7842,-80.2315 136.9238,-71.2917 166.6341,-64.6747"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="167.6681,-68.0303 176.668,-62.44 166.1463,-61.1977 167.6681,-68.0303"/>
+<text text-anchor="middle" x="123.274" y="-78.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
 </g>
 <!-- w0_t2 -->
-<g id="node3" class="node"><title>w0_t2</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="296.54" cy="-73" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="296.54" y="-74.6" font-family="Times,serif" font-size="8.00">w0_t2</text>
-<text text-anchor="middle" x="296.54" y="-66.6" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node3" class="node">
+<title>w0_t2</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="372.5403" cy="-81" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="372.5403" y="-82.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t2</text>
+<text text-anchor="middle" x="372.5403" y="-74.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- w0_t0&#45;&gt;w0_t2 -->
-<g id="edge2" class="edge"><title>w0_t0&#45;&gt;w0_t2</title>
-<path fill="none" stroke="#ff0000" d="M70.4808,-87.022C76.788,-88.2575 83.5527,-89.3719 89.8877,-90 128.691,-93.847 177.046,-95.0929 247.617,-85 251.271,-84.4775 255.05,-83.7916 258.81,-83.0119"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="259.643,-86.4118 268.615,-80.7773 258.088,-79.5868 259.643,-86.4118"/>
-<text text-anchor="middle" x="167.583" y="-94.8" font-family="Times,serif" font-size="14.00">DEN</text>
+<g id="edge2" class="edge">
+<title>w0_t0&#45;&gt;w0_t2</title>
+<path fill="none" stroke="#ff0000" d="M68.629,-100.5783C84.1232,-105.2144 104.632,-110 123.274,-110 123.274,-110 123.274,-110 289.0619,-110 306.6816,-110 325.2926,-104.1638 340.4596,-97.7277"/>
+<polygon fill="#ff0000" stroke="#ff0000" points="342.2138,-100.7757 349.884,-93.4669 339.3301,-94.3973 342.2138,-100.7757"/>
+<text text-anchor="middle" x="205.5834" y="-112.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
 </g>
 <!-- w0_t1&#45;&gt;w0_t2 -->
-<g id="edge3" class="edge"><title>w0_t1&#45;&gt;w0_t2</title>
-<path fill="none" stroke="#c85064" d="M198.029,-59.9429C215.334,-62.2601 237.431,-65.219 256.213,-67.7339"/>
-<polygon fill="#c85064" stroke="#c85064" points="255.878,-71.2203 266.254,-69.0785 256.807,-64.2822 255.878,-71.2203"/>
-<text text-anchor="middle" x="232.062" y="-69.8" font-family="Times,serif" font-size="14.00">WFK</text>
+<g id="edge3" class="edge">
+<title>w0_t1&#45;&gt;w0_t2</title>
+<path fill="none" stroke="#c85064" d="M235.8181,-60.5273C262.8849,-64.5803 302.769,-70.5525 332.4824,-75.0018"/>
+<polygon fill="#c85064" stroke="#c85064" points="332.1225,-78.4868 342.5306,-76.5064 333.1592,-71.564 332.1225,-78.4868"/>
+<text text-anchor="middle" x="289.0619" y="-72.8" font-family="Times,serif" font-size="14.00" fill="#000000">WFK</text>
 </g>
 </g>
 </svg>
@@ -15580,7 +15027,7 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[529]:</div>
+<div class="prompt input_prompt">In&nbsp;[122]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">flow_with_file</span> <span class="o">=</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">Flow</span><span class="p">(</span><span class="n">workdir</span><span class="o">=</span><span class="s2">&quot;flow_with_file&quot;</span><span class="p">)</span>
@@ -15618,7 +15065,7 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[529]:</div>
+    <div class="prompt output_prompt">Out[122]:</div>
 
 
 
@@ -15626,64 +15073,74 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: flow Pages: 1 -->
-<svg width="320pt" height="231pt"
- viewBox="0.00 0.00 320.00 231.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="343pt" height="231pt"
+ viewBox="0.00 0.00 343.00 231.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 205)">
 <title>flow</title>
-<polygon fill="white" stroke="none" points="-4,26 -4,-205 316,-205 316,26 -4,26"/>
-<text text-anchor="start" x="20.6143" y="15.2" font-family="Times,serif" font-size="14.00">Flow, node_id=387425, workdir=flow_with_file</text>
-<g id="clust1" class="cluster"><title>clusterw0</title>
-<path fill="#e0eeee" stroke="black" d="M11.874,-126.442C11.874,-126.442 64.874,-126.442 64.874,-126.442 70.874,-126.442 76.874,-132.442 76.874,-138.442 76.874,-138.442 76.874,-188.442 76.874,-188.442 76.874,-194.442 70.874,-200.442 64.874,-200.442 64.874,-200.442 11.874,-200.442 11.874,-200.442 5.87402,-200.442 -0.125977,-194.442 -0.125977,-188.442 -0.125977,-188.442 -0.125977,-138.442 -0.125977,-138.442 -0.125977,-132.442 5.87402,-126.442 11.874,-126.442"/>
-<text text-anchor="middle" x="38.374" y="-185.242" font-family="Times,serif" font-size="14.00">Work (w0)</text>
+<polygon fill="#ffffff" stroke="transparent" points="-4,26 -4,-205 339,-205 339,26 -4,26"/>
+<text text-anchor="start" x="42.6143" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=571, workdir=flow_with_file</text>
+<g id="clust1" class="cluster">
+<title>clusterw0</title>
+<path fill="#e0eeee" stroke="#000000" d="M21.2944,-127.3264C21.2944,-127.3264 74.2944,-127.3264 74.2944,-127.3264 80.2944,-127.3264 86.2944,-133.3264 86.2944,-139.3264 86.2944,-139.3264 86.2944,-189.3264 86.2944,-189.3264 86.2944,-195.3264 80.2944,-201.3264 74.2944,-201.3264 74.2944,-201.3264 21.2944,-201.3264 21.2944,-201.3264 15.2944,-201.3264 9.2944,-195.3264 9.2944,-189.3264 9.2944,-189.3264 9.2944,-139.3264 9.2944,-139.3264 9.2944,-133.3264 15.2944,-127.3264 21.2944,-127.3264"/>
+<text text-anchor="middle" x="47.7944" y="-186.1264" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
 </g>
-<g id="clust2" class="cluster"><title>clusterw1</title>
-<path fill="#e0eeee" stroke="black" d="M185.622,-126.534C185.622,-126.534 239.622,-126.534 239.622,-126.534 245.622,-126.534 251.622,-132.534 251.622,-138.534 251.622,-138.534 251.622,-188.534 251.622,-188.534 251.622,-194.534 245.622,-200.534 239.622,-200.534 239.622,-200.534 185.622,-200.534 185.622,-200.534 179.622,-200.534 173.622,-194.534 173.622,-188.534 173.622,-188.534 173.622,-138.534 173.622,-138.534 173.622,-132.534 179.622,-126.534 185.622,-126.534"/>
-<text text-anchor="middle" x="212.622" y="-185.334" font-family="Times,serif" font-size="14.00">Work (w1)</text>
+<g id="clust2" class="cluster">
+<title>clusterw1</title>
+<path fill="#e0eeee" stroke="#000000" d="M197.1446,-127.4383C197.1446,-127.4383 251.1446,-127.4383 251.1446,-127.4383 257.1446,-127.4383 263.1446,-133.4383 263.1446,-139.4383 263.1446,-139.4383 263.1446,-189.4383 263.1446,-189.4383 263.1446,-195.4383 257.1446,-201.4383 251.1446,-201.4383 251.1446,-201.4383 197.1446,-201.4383 197.1446,-201.4383 191.1446,-201.4383 185.1446,-195.4383 185.1446,-189.4383 185.1446,-189.4383 185.1446,-139.4383 185.1446,-139.4383 185.1446,-133.4383 191.1446,-127.4383 197.1446,-127.4383"/>
+<text text-anchor="middle" x="224.1446" y="-186.2383" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w1)</text>
 </g>
-<g id="clust3" class="cluster"><title>clusterw2</title>
-<path fill="#e0eeee" stroke="black" d="M124.881,0.150113C124.881,0.150113 178.881,0.150113 178.881,0.150113 184.881,0.150113 190.881,-5.84989 190.881,-11.8499 190.881,-11.8499 190.881,-61.8499 190.881,-61.8499 190.881,-67.8499 184.881,-73.8499 178.881,-73.8499 178.881,-73.8499 124.881,-73.8499 124.881,-73.8499 118.881,-73.8499 112.881,-67.8499 112.881,-61.8499 112.881,-61.8499 112.881,-11.8499 112.881,-11.8499 112.881,-5.84989 118.881,0.150113 124.881,0.150113"/>
-<text text-anchor="middle" x="151.881" y="-58.6499" font-family="Times,serif" font-size="14.00">Work (w2)</text>
+<g id="clust3" class="cluster">
+<title>clusterw2</title>
+<path fill="#e0eeee" stroke="#000000" d="M134.7061,-.1723C134.7061,-.1723 188.7061,-.1723 188.7061,-.1723 194.7061,-.1723 200.7061,-6.1723 200.7061,-12.1723 200.7061,-12.1723 200.7061,-62.1723 200.7061,-62.1723 200.7061,-68.1723 194.7061,-74.1723 188.7061,-74.1723 188.7061,-74.1723 134.7061,-74.1723 134.7061,-74.1723 128.7061,-74.1723 122.7061,-68.1723 122.7061,-62.1723 122.7061,-62.1723 122.7061,-12.1723 122.7061,-12.1723 122.7061,-6.1723 128.7061,-.1723 134.7061,-.1723"/>
+<text text-anchor="middle" x="161.7061" y="-58.9723" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w2)</text>
 </g>
 <!-- w0_t0 -->
-<g id="node1" class="node"><title>w0_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="38.4209" cy="-152.69" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="38.4209" y="-154.29" font-family="Times,serif" font-size="8.00">w0_t0</text>
-<text text-anchor="middle" x="38.4209" y="-146.29" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node1" class="node">
+<title>w0_t0</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="47.8413" cy="-153.5737" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="47.8413" y="-155.1737" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
+<text text-anchor="middle" x="47.8413" y="-147.1737" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- w1_t0 -->
-<g id="node2" class="node"><title>w1_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="212.395" cy="-152.612" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="212.395" y="-154.212" font-family="Times,serif" font-size="8.00">w1_t0</text>
-<text text-anchor="middle" x="212.395" y="-146.212" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node2" class="node">
+<title>w1_t0</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="223.9178" cy="-153.5161" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="223.9178" y="-155.1161" font-family="Times,serif" font-size="8.00" fill="#000000">w1_t0</text>
+<text text-anchor="middle" x="223.9178" y="-147.1161" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- w2_t0 -->
-<g id="node3" class="node"><title>w2_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="151.458" cy="-25.9971" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="151.458" y="-27.5971" font-family="Times,serif" font-size="8.00">w2_t0</text>
-<text text-anchor="middle" x="151.458" y="-19.5971" font-family="Times,serif" font-size="8.00">NscfTask</text>
+<g id="node3" class="node">
+<title>w2_t0</title>
+<ellipse fill="#c85064" stroke="#c85064" cx="161.2832" cy="-26.3195" rx="30.8467" ry="18"/>
+<text text-anchor="middle" x="161.2832" y="-27.9195" font-family="Times,serif" font-size="8.00" fill="#000000">w2_t0</text>
+<text text-anchor="middle" x="161.2832" y="-19.9195" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
 </g>
 <!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc -->
-<g id="node4" class="node"><title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc</title>
-<ellipse fill="#6633ff" stroke="#6633ff" cx="159.283" cy="-100.227" rx="152.966" ry="18"/>
-<text text-anchor="start" x="30.2395" y="-97.827" font-family="Times,serif" font-size="8.00">FileNode, node_id=387428, rpath=../abipy/abipy/data/refs/si_ebands/si_DEN.nc</text>
+<g id="node4" class="node">
+<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc</title>
+<ellipse fill="#6633ff" stroke="#6633ff" cx="167.5933" cy="-101.2394" rx="167.734" ry="18"/>
+<text text-anchor="start" x="25.4409" y="-98.8394" font-family="Times,serif" font-size="8.00" fill="#000000">FileNode, node_id=574, rpath=../../git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc</text>
 </g>
 <!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w0_t0 -->
-<g id="edge1" class="edge"><title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w0_t0</title>
-<path fill="none" stroke="#6633ff" d="M119.037,-117.696C104.085,-124.187 87.269,-131.486 72.8797,-137.732"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="71.1376,-134.673 63.3582,-141.865 73.9249,-141.094 71.1376,-134.673"/>
+<g id="edge1" class="edge">
+<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w0_t0</title>
+<path fill="none" stroke="#6633ff" d="M127.3845,-118.8115C112.6993,-125.2293 96.2385,-132.423 82.1179,-138.5941"/>
+<polygon fill="#6633ff" stroke="#6633ff" points="80.5281,-135.4692 72.7665,-142.6809 83.3313,-141.8834 80.5281,-135.4692"/>
 </g>
 <!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w1_t0 -->
-<g id="edge2" class="edge"><title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w1_t0</title>
-<path fill="none" stroke="#6633ff" d="M177.561,-118.255C181.291,-121.934 185.263,-125.852 189.141,-129.676"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="186.812,-132.296 196.39,-136.826 191.728,-127.312 186.812,-132.296"/>
+<g id="edge2" class="edge">
+<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w1_t0</title>
+<path fill="none" stroke="#6633ff" d="M186.977,-119.23C191.1138,-123.0696 195.5314,-127.1697 199.8205,-131.1506"/>
+<polygon fill="#6633ff" stroke="#6633ff" points="197.6032,-133.8678 207.3137,-138.1053 202.3651,-128.7371 197.6032,-133.8678"/>
 </g>
 <!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w2_t0 -->
-<g id="edge3" class="edge"><title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w2_t0</title>
-<path fill="none" stroke="#6633ff" d="M157.348,-81.878C156.467,-73.5182 155.404,-63.4346 154.425,-54.1476"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="157.899,-53.7129 153.37,-44.135 150.937,-54.4468 157.899,-53.7129"/>
+<g id="edge3" class="edge">
+<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w2_t0</title>
+<path fill="none" stroke="#6633ff" d="M166.0658,-83.1033C165.3502,-74.6079 164.4809,-64.2865 163.6807,-54.7854"/>
+<polygon fill="#6633ff" stroke="#6633ff" points="167.1455,-54.2191 162.8185,-44.5481 160.1702,-54.8066 167.1455,-54.2191"/>
 </g>
 </g>
 </svg>
@@ -15708,7 +15165,7 @@ of passing the SCF input to the <em>from_scf_input</em> factory function</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[531]:</div>
+<div class="prompt input_prompt">In&nbsp;[124]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_flow_alas_phonons</span><span class="p">():</span>
@@ -15738,237 +15195,14 @@ of passing the SCF input to the <em>from_scf_input</em> factory function</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[532]:</div>
+<div class="prompt input_prompt">In&nbsp;[125]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">flow_phbands</span> <span class="o">=</span> <span class="n">build_flow_alas_phonons</span><span class="p">()</span>
-<span class="n">flow_phbands</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#flow_phbands = build_flow_alas_phonons()</span>
+<span class="c1">#flow_phbands.get_graphviz()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[532]:</div>
-
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.38.0 (20140413.2041)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="528pt" height="381pt"
- viewBox="0.00 0.00 528.00 381.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 355)">
-<title>flow</title>
-<polygon fill="white" stroke="none" points="-4,26 -4,-355 524,-355 524,26 -4,26"/>
-<text text-anchor="start" x="90.0039" y="15.2" font-family="Times,serif" font-size="14.00">PhononFlow, node_id=387435, workdir=flow_alas_phonons</text>
-<g id="clust1" class="cluster"><title>clusterw0</title>
-<path fill="#e0eeee" stroke="black" d="M188.44,-149.496C188.44,-149.496 274.44,-149.496 274.44,-149.496 280.44,-149.496 286.44,-155.496 286.44,-161.496 286.44,-161.496 286.44,-270.496 286.44,-270.496 286.44,-276.496 280.44,-282.496 274.44,-282.496 274.44,-282.496 188.44,-282.496 188.44,-282.496 182.44,-282.496 176.44,-276.496 176.44,-270.496 176.44,-270.496 176.44,-161.496 176.44,-161.496 176.44,-155.496 182.44,-149.496 188.44,-149.496"/>
-<text text-anchor="middle" x="231.44" y="-267.296" font-family="Times,serif" font-size="14.00">Work (w0)</text>
-</g>
-<g id="clust2" class="cluster"><title>clusterw1</title>
-<path fill="#e0eeee" stroke="black" d="M307.898,-22.0444C307.898,-22.0444 507.898,-22.0444 507.898,-22.0444 513.898,-22.0444 519.898,-28.0444 519.898,-34.0444 519.898,-34.0444 519.898,-225.044 519.898,-225.044 519.898,-231.044 513.898,-237.044 507.898,-237.044 507.898,-237.044 307.898,-237.044 307.898,-237.044 301.898,-237.044 295.898,-231.044 295.898,-225.044 295.898,-225.044 295.898,-34.0444 295.898,-34.0444 295.898,-28.0444 301.898,-22.0444 307.898,-22.0444"/>
-<text text-anchor="middle" x="407.898" y="-221.844" font-family="Times,serif" font-size="14.00">BecWork (w1)</text>
-</g>
-<g id="clust3" class="cluster"><title>clusterw2</title>
-<path fill="#e0eeee" stroke="black" d="M43.3555,0.0843743C43.3555,0.0843743 272.356,0.0843743 272.356,0.0843743 278.356,0.0843743 284.356,-5.91563 284.356,-11.9156 284.356,-11.9156 284.356,-124.916 284.356,-124.916 284.356,-130.916 278.356,-136.916 272.356,-136.916 272.356,-136.916 43.3555,-136.916 43.3555,-136.916 37.3555,-136.916 31.3555,-130.916 31.3555,-124.916 31.3555,-124.916 31.3555,-11.9156 31.3555,-11.9156 31.3555,-5.91563 37.3555,0.0843743 43.3555,0.0843743"/>
-<text text-anchor="middle" x="157.856" y="-121.716" font-family="Times,serif" font-size="14.00">PhononWork (w2)</text>
-</g>
-<g id="clust4" class="cluster"><title>clusterw3</title>
-<path fill="#e0eeee" stroke="black" d="M12.449,-232.388C12.449,-232.388 152.449,-232.388 152.449,-232.388 158.449,-232.388 164.449,-238.388 164.449,-244.388 164.449,-244.388 164.449,-339.388 164.449,-339.388 164.449,-345.388 158.449,-351.388 152.449,-351.388 152.449,-351.388 12.449,-351.388 12.449,-351.388 6.44901,-351.388 0.449006,-345.388 0.449006,-339.388 0.449006,-339.388 0.449006,-244.388 0.449006,-244.388 0.449006,-238.388 6.44901,-232.388 12.449,-232.388"/>
-<text text-anchor="middle" x="82.449" y="-336.188" font-family="Times,serif" font-size="14.00">PhononWork (w3)</text>
-</g>
-<!-- w0_t0 -->
-<g id="node1" class="node"><title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="230.088" cy="-204.675" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="230.088" y="-206.275" font-family="Times,serif" font-size="8.00">w0_t0</text>
-<text text-anchor="middle" x="230.088" y="-198.275" font-family="Times,serif" font-size="8.00">ScfTask</text>
-</g>
-<!-- w1_t0 -->
-<g id="node2" class="node"><title>w1_t0</title>
-<ellipse fill="#00cccc" stroke="#00cccc" cx="474.937" cy="-54.1549" rx="30.0647" ry="18"/>
-<text text-anchor="middle" x="474.937" y="-55.7549" font-family="Times,serif" font-size="8.00">w1_t0</text>
-<text text-anchor="middle" x="474.937" y="-47.7549" font-family="Times,serif" font-size="8.00">DdkTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w1_t0 -->
-<g id="edge1" class="edge"><title>w0_t0&#45;&gt;w1_t0</title>
-<path fill="none" stroke="#ff0000" d="M250.543,-192.101C293.715,-165.561 394.316,-103.717 444.846,-72.6537"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="446.987,-75.446 453.673,-67.2272 443.321,-69.4826 446.987,-75.446"/>
-<text text-anchor="middle" x="332.139" y="-135.177" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w1_t1 -->
-<g id="node3" class="node"><title>w1_t1</title>
-<ellipse fill="#00cccc" stroke="#00cccc" cx="333.66" cy="-101.775" rx="30.0647" ry="18"/>
-<text text-anchor="middle" x="333.66" y="-103.375" font-family="Times,serif" font-size="8.00">w1_t1</text>
-<text text-anchor="middle" x="333.66" y="-95.3746" font-family="Times,serif" font-size="8.00">DdkTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w1_t1 -->
-<g id="edge2" class="edge"><title>w0_t0&#45;&gt;w1_t1</title>
-<path fill="none" stroke="#ff0000" d="M245.37,-189.492C262.634,-172.34 290.91,-144.247 310.802,-124.484"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="313.348,-126.889 317.975,-117.358 308.414,-121.923 313.348,-126.889"/>
-<text text-anchor="middle" x="262.531" y="-159.788" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w1_t2 -->
-<g id="node4" class="node"><title>w1_t2</title>
-<ellipse fill="#00cccc" stroke="#00cccc" cx="482.359" cy="-119.678" rx="30.0647" ry="18"/>
-<text text-anchor="middle" x="482.359" y="-121.278" font-family="Times,serif" font-size="8.00">w1_t2</text>
-<text text-anchor="middle" x="482.359" y="-113.278" font-family="Times,serif" font-size="8.00">DdkTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w1_t2 -->
-<g id="edge3" class="edge"><title>w0_t0&#45;&gt;w1_t2</title>
-<path fill="none" stroke="#ff0000" d="M255.199,-196.214C300.065,-181.098 394.142,-149.4 446.047,-131.912"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="447.479,-135.123 455.838,-128.613 445.244,-128.489 447.479,-135.123"/>
-<text text-anchor="middle" x="335.068" y="-166.863" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w1_t3 -->
-<g id="node5" class="node"><title>w1_t3</title>
-<ellipse fill="#7a7aff" stroke="#7a7aff" cx="392.591" cy="-149.208" rx="29.2677" ry="18"/>
-<text text-anchor="middle" x="392.591" y="-150.808" font-family="Times,serif" font-size="8.00">w1_t3</text>
-<text text-anchor="middle" x="392.591" y="-142.808" font-family="Times,serif" font-size="8.00">BecTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w1_t3 -->
-<g id="edge4" class="edge"><title>w0_t0&#45;&gt;w1_t3</title>
-<path fill="none" stroke="#ff0000" d="M255.123,-196.13C282.517,-186.779 326.635,-171.721 357.48,-161.192"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="358.658,-164.489 366.991,-157.946 356.396,-157.864 358.658,-164.489"/>
-<text text-anchor="middle" x="290.746" y="-181.461" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w1_t4 -->
-<g id="node6" class="node"><title>w1_t4</title>
-<ellipse fill="#7a7aff" stroke="#7a7aff" cx="462.701" cy="-189.068" rx="29.2677" ry="18"/>
-<text text-anchor="middle" x="462.701" y="-190.668" font-family="Times,serif" font-size="8.00">w1_t4</text>
-<text text-anchor="middle" x="462.701" y="-182.668" font-family="Times,serif" font-size="8.00">BecTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w1_t4 -->
-<g id="edge5" class="edge"><title>w0_t0&#45;&gt;w1_t4</title>
-<path fill="none" stroke="#ff0000" d="M258.147,-202.792C299.375,-200.026 376.494,-194.852 423.36,-191.708"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="423.702,-195.193 433.446,-191.031 423.234,-188.209 423.702,-195.193"/>
-<text text-anchor="middle" x="325.198" y="-200.05" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w2_t0 -->
-<g id="node7" class="node"><title>w2_t0</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="76.5805" cy="-78.7171" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="76.5805" y="-80.3171" font-family="Times,serif" font-size="8.00">w2_t0</text>
-<text text-anchor="middle" x="76.5805" y="-72.3171" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w2_t0 -->
-<g id="edge6" class="edge"><title>w0_t0&#45;&gt;w2_t0</title>
-<path fill="none" stroke="#ff0000" d="M212.777,-190.471C186.145,-168.618 134.911,-126.58 103.436,-100.753"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="105.454,-97.8814 95.5033,-94.2438 101.014,-103.293 105.454,-97.8814"/>
-<text text-anchor="middle" x="142.552" y="-148.412" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w2_t1 -->
-<g id="node8" class="node"><title>w2_t1</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="112.46" cy="-25.9548" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="112.46" y="-27.5548" font-family="Times,serif" font-size="8.00">w2_t1</text>
-<text text-anchor="middle" x="112.46" y="-19.5548" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w2_t1 -->
-<g id="edge7" class="edge"><title>w0_t0&#45;&gt;w2_t1</title>
-<path fill="none" stroke="#ff0000" d="M219.022,-187.861C198.407,-156.54 154.003,-89.074 129.523,-51.8795"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="132.176,-49.5449 123.755,-43.116 126.329,-53.3933 132.176,-49.5449"/>
-<text text-anchor="middle" x="158.717" y="-108.67" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w2_t2 -->
-<g id="node9" class="node"><title>w2_t2</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="203.495" cy="-40.3511" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="203.495" y="-41.9511" font-family="Times,serif" font-size="8.00">w2_t2</text>
-<text text-anchor="middle" x="203.495" y="-33.9511" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w2_t2 -->
-<g id="edge8" class="edge"><title>w0_t0&#45;&gt;w2_t2</title>
-<path fill="none" stroke="#ff0000" d="M227.14,-186.462C222.528,-157.96 213.567,-102.589 208.098,-68.7976"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="211.508,-67.9584 206.456,-58.646 204.598,-69.0768 211.508,-67.9584"/>
-<text text-anchor="middle" x="233.175" y="-130.43" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w2_t3 -->
-<g id="node10" class="node"><title>w2_t3</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="239.557" cy="-88.4516" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="239.557" y="-90.0516" font-family="Times,serif" font-size="8.00">w2_t3</text>
-<text text-anchor="middle" x="239.557" y="-82.0516" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w2_t3 -->
-<g id="edge9" class="edge"><title>w0_t0&#45;&gt;w2_t3</title>
-<path fill="none" stroke="#ff0000" d="M231.568,-186.515C233.096,-167.751 235.503,-138.216 237.275,-116.459"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="240.764,-116.735 238.088,-106.484 233.788,-116.167 240.764,-116.735"/>
-<text text-anchor="middle" x="218.866" y="-154.287" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w3_t0 -->
-<g id="node11" class="node"><title>w3_t0</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="119.203" cy="-303.204" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="119.203" y="-304.804" font-family="Times,serif" font-size="8.00">w3_t0</text>
-<text text-anchor="middle" x="119.203" y="-296.804" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w3_t0 -->
-<g id="edge10" class="edge"><title>w0_t0&#45;&gt;w3_t0</title>
-<path fill="none" stroke="#ff0000" d="M213.247,-219.639C195.089,-235.774 165.964,-261.654 144.934,-280.341"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="142.461,-277.856 137.31,-287.115 147.11,-283.089 142.461,-277.856"/>
-<text text-anchor="middle" x="163.535" y="-252.79" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w3_t1 -->
-<g id="node12" class="node"><title>w3_t1</title>
-<ellipse fill="#0096fa" stroke="#0096fa" cx="46.0918" cy="-258.681" rx="37.3834" ry="18"/>
-<text text-anchor="middle" x="46.0918" y="-260.281" font-family="Times,serif" font-size="8.00">w3_t1</text>
-<text text-anchor="middle" x="46.0918" y="-252.281" font-family="Times,serif" font-size="8.00">PhononTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w3_t1 -->
-<g id="edge11" class="edge"><title>w0_t0&#45;&gt;w3_t1</title>
-<path fill="none" stroke="#ff0000" d="M204.504,-212.184C174.267,-221.059 123.536,-235.95 87.6399,-246.486"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="86.5475,-243.159 77.938,-249.334 88.519,-249.875 86.5475,-243.159"/>
-<text text-anchor="middle" x="130.517" y="-232.135" font-family="Times,serif" font-size="14.00">WFK</text>
-</g>
-<!-- w1_t0&#45;&gt;w1_t3 -->
-<g id="edge12" class="edge"><title>w1_t0&#45;&gt;w1_t3</title>
-<path fill="none" stroke="#00cccc" d="M460.968,-70.2793C447.877,-85.3915 428.142,-108.171 413.234,-125.379"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="410.256,-123.472 406.354,-133.322 415.547,-128.055 410.256,-123.472"/>
-<text text-anchor="middle" x="421.936" y="-100.629" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-<!-- w1_t0&#45;&gt;w1_t4 -->
-<g id="edge13" class="edge"><title>w1_t0&#45;&gt;w1_t4</title>
-<path fill="none" stroke="#00cccc" d="M473.287,-72.3499C471.235,-94.981 467.707,-133.877 465.292,-160.5"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="461.782,-160.455 464.364,-170.731 468.753,-161.088 461.782,-160.455"/>
-<text text-anchor="middle" x="454.124" y="-119.225" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-<!-- w1_t1&#45;&gt;w1_t3 -->
-<g id="edge14" class="edge"><title>w1_t1&#45;&gt;w1_t3</title>
-<path fill="none" stroke="#00cccc" d="M351.661,-116.264C356.459,-120.126 361.738,-124.375 366.863,-128.5"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="364.715,-131.264 374.7,-134.807 369.104,-125.811 364.715,-131.264"/>
-<text text-anchor="middle" x="374.428" y="-111.182" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-<!-- w1_t1&#45;&gt;w1_t4 -->
-<g id="edge15" class="edge"><title>w1_t1&#45;&gt;w1_t4</title>
-<path fill="none" stroke="#00cccc" d="M353.822,-115.414C375.413,-130.02 409.849,-153.315 434.205,-169.792"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="432.436,-172.82 442.68,-175.525 436.358,-167.022 432.436,-172.82"/>
-<text text-anchor="middle" x="409.179" y="-131.403" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-<!-- w1_t2&#45;&gt;w1_t3 -->
-<g id="edge16" class="edge"><title>w1_t2&#45;&gt;w1_t3</title>
-<path fill="none" stroke="#00cccc" d="M455.911,-128.378C447.252,-131.227 437.484,-134.44 428.259,-137.474"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="426.946,-134.222 418.54,-140.671 429.133,-140.871 426.946,-134.222"/>
-<text text-anchor="middle" x="457.251" y="-135.726" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-<!-- w1_t2&#45;&gt;w1_t4 -->
-<g id="edge17" class="edge"><title>w1_t2&#45;&gt;w1_t4</title>
-<path fill="none" stroke="#00cccc" d="M477.296,-137.547C475.249,-144.776 472.837,-153.289 470.57,-161.291"/>
-<polygon fill="#00cccc" stroke="#00cccc" points="467.173,-160.443 467.815,-171.018 473.908,-162.351 467.173,-160.443"/>
-<text text-anchor="middle" x="458.768" y="-152.219" font-family="Times,serif" font-size="14.00">DDK</text>
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16015,18 +15249,18 @@ of passing the SCF input to the <em>from_scf_input</em> factory function</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[533]:</div>
+<div class="prompt input_prompt">In&nbsp;[126]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pseudo_dojo.core.pseudos</span> <span class="k">import</span> <span class="n">OfficialDojoTable</span>
-<span class="kn">from</span> <span class="nn">abiflows.fireworks.workflows.abinit_workflows</span> <span class="k">import</span> <span class="n">PhononFullFWWorkflow</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from pseudo_dojo.core.pseudos import OfficialDojoTable</span>
+<span class="c1">#from abiflows.fireworks.workflows.abinit_workflows import PhononFullFWWorkflow </span>
 
 <span class="c1"># Pseudopotential table from the PseudoDojo package</span>
-<span class="n">pseudo_table</span> <span class="o">=</span> <span class="n">OfficialDojoTable</span><span class="o">.</span><span class="n">from_dojodir</span><span class="p">(</span><span class="s1">&#39;ONCVPSP-PBEsol-PDv0.4&#39;</span><span class="p">,</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
+<span class="c1">#pseudo_table = OfficialDojoTable.from_dojodir(&#39;ONCVPSP-PBEsol-PDv0.4&#39;,&#39;standard&#39;)</span>
 
 <span class="c1"># Create fireworks workflow with default settings</span>
-<span class="n">structure</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;si.cif&quot;</span><span class="p">)</span>
-<span class="n">wf</span> <span class="o">=</span> <span class="n">PhononFullFWWorkflow</span><span class="o">.</span><span class="n">from_factory</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="n">pseudo_table</span><span class="p">)</span>
+<span class="c1">#structure = abilab.Structure.from_file(&quot;si.cif&quot;)</span>
+<span class="c1">#wf = PhononFullFWWorkflow.from_factory(structure=structure, pseudos=pseudo_table)</span>
 </pre></div>
 
     </div>
