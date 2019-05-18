@@ -13247,22 +13247,29 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">Technical aspects related to high-throughput calculations with ABINIT<a class="anchor-link" href="#Technical-aspects-related-to-high-throughput-calculations-with-ABINIT">&#182;</a></h1><h3 id="M.-Giantomassi-and-the-AbiPy-group">M. Giantomassi and the AbiPy group<a class="anchor-link" href="#M.-Giantomassi-and-the-AbiPy-group">&#182;</a></h3><p>9th international ABINIT developer workshop 20-22nd May 2019 - Louvain-la-Neuve, Belgium</p>
+<h1 id="Technical-aspects-related-to-automatic-calculations-with-ABINIT">Technical aspects related to automatic calculations with ABINIT<a class="anchor-link" href="#Technical-aspects-related-to-automatic-calculations-with-ABINIT">&#182;</a></h1><h3 id="M.-Giantomassi-and-the-AbiPy-group">M. Giantomassi and the AbiPy group<a class="anchor-link" href="#M.-Giantomassi-and-the-AbiPy-group">&#182;</a></h3><p>9th international ABINIT developer workshop<br>
+<small>20-22nd May 2019 - Louvain-la-Neuve, Belgium</small></p>
 <!-- link rel="stylesheet" href="reveal.js/css/theme/sky.css" id="theme" -->
 
 <p><img src="./assets/intro_logos.png" width="85%" heigh="15%" align="center"></p>
+<h2 id="Overview:">Overview:<a class="anchor-link" href="#Overview:">&#182;</a></h2><ul>
+<li>Approach used to connect AbiPy with Abinit</li>
+<li>Advantages and drawbacks for Yaml and netcdf</li>
+<li>How to perform benchmarks and stress tests in python</li>
+<li>Technical problems related to automatic calculations</li>
+</ul>
+<!--
 <hr> 
 
-<ul>
-<li><p>These slides have been generated using <a href="https://jupyter.org">jupyter</a>, <a href="https://github.com/jupyter/nbconvert">nbconvert</a> and <a href="https://revealjs.com/">revealjs</a></p>
-</li>
-<li><p>The notebook can be downloaded from this <a href="https://github.com/gmatteo/abipy_htc_technical_aspects_abidev2019">github repo</a></p>
-</li>
-<li><p>To install and configure the software, follow these <a href="https://github.com/abinit/abipy#getting-abipy">installation instructions</a></p>
-</li>
-</ul>
-<p>Use the Space key to navigate through all slides.</p>
-<!--
+* These slides have been generated using [jupyter](https://jupyter.org), [nbconvert](https://github.com/jupyter/nbconvert) and [revealjs](https://revealjs.com/)
+
+* The notebook can be downloaded from this [github repo](https://github.com/gmatteo/abipy_htc_technical_aspects_abidev2019)
+
+* To install and configure the software, follow these [installation instructions](https://github.com/abinit/abipy#getting-abipy)
+
+Use the Space key to navigate through all slides.
+
+
 In this talk, I will present the approach employed in AbiPy to implement automatic ABINIT calculations. More specifically, I will discuss how we employ
 YAML and netcdf files to exchange information between Fortran and Python,
 the logic used in AbiPy to parallelize and optimize calculations at runtime and
@@ -13272,6 +13279,28 @@ that can interoperate seamlessly with our high-throughput infrastructure. In the
 last part, I will present some of the technical problems we are still facing and
 discuss possible approaches to address these issues.
 -->
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-do-we-need-to-automate-calculations?">What do we need to automate calculations?<a class="anchor-link" href="#What-do-we-need-to-automate-calculations?">&#182;</a></h2><ul>
+<li>Tools to parse and analyze output results</li>
+<li>Programatic interface to generate input files</li>
+<li>High-level logic for:<ul>
+<li>Managing complicated workflows</li>
+<li>Exposing task parallelism (independent steps can be executed in parallel)</li>
+<li>Handling runtime errors and restarting calculations</li>
+<li>Saving final results in machine-readable format (e.g. databases)</li>
+</ul>
+</li>
+</ul>
+<hr>
+
+<center>
+<img src="./assets/sdata201865-f2.jpg" width="60%" align="center">
+</center>
 </div>
 </div>
 </div></section><section>
@@ -13293,34 +13322,6 @@ discuss possible approaches to address these issues.
 <li>Glue code implemented in python</li>
 </ul>
 </li>
-<li><p>ABINIT and AbiPy communicate through Yaml docs and <a href="https://www.unidata.ucar.edu/software/netcdf/docs/">netcdf</a> files</p>
-</li>
-<li><p>AbiPy employs this "protocol" to generate input files, handle errors, implement high-level logic</p>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Why-two-formats-for-communicating?">Why two formats for communicating?<a class="anchor-link" href="#Why-two-formats-for-communicating?">&#182;</a></h2><ul>
-<li><p>yaml docs</p>
-<ul>
-<li>Small documents for error message with context</li>
-<li>Used to access Abinit-computed quantities (<em>autoparal</em>, list of <em>perturbations</em>)</li>
-<li>Extracted from log file </li>
-<li>Easy to write with plain Fortran write</li>
-</ul>
-</li>
-<li><p>netcdf</p>
-<ul>
-<li>Portable binary format implemented in C</li>
-<li>Fortran/Python bindings and support for parallel MPI-IO (HDF5)</li>
-<li><a href="https://www.etsf.eu/fileformats">ETSF-IO specifications</a> for crystalline structures, wavefunctions, densities…</li>
-</ul>
-</li>
 </ul>
 
 </div>
@@ -13329,185 +13330,38 @@ discuss possible approaches to address these issues.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How-do-we-understand-that-the-job-completed-successfully?">How do we understand that the job completed successfully?<a class="anchor-link" href="#How-do-we-understand-that-the-job-completed-successfully?">&#182;</a></h2><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!FinalSummary</span>
-<span class="nt">program</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">abinit</span>
-<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8.11.6</span>
-<span class="nt">start_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:01:14 2019</span>
-<span class="nt">end_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:04:04 2019</span>
-<span class="nt">overall_cpu_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">168.8</span>
-<span class="nt">overall_wall_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">169.7</span>
-<span class="nt">exit_requested_by_user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span> 
-<span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="nt">pseudos</span><span class="p">:</span> 
-    <span class="nt">Li  </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9517c0b7d24d4898578b8627ce68311d</span>
-    <span class="nt">F   </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14cf65a61ba7320a86892d2f062b1f44</span>
-<span class="nt">usepaw</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="nt">mpi_procs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">omp_threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">num_warnings</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="nt">num_comments</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">73</span>
-<span class="nn">...</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Abort-handled-by-the-developer">Abort handled by the developer<a class="anchor-link" href="#Abort-handled-by-the-developer">&#182;</a></h2><p></p><h4 id="Fortran">Fortran<a class="anchor-link" href="#Fortran">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">MSG_ERROR</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
-</pre></div>
-<h4 id="Yaml-doc-in-log-file">Yaml doc in log file<a class="anchor-link" href="#Yaml-doc-in-log-file">&#182;</a></h4><ul>
-<li>src_file and str_line added by CPP preprocessor</li>
-<li>message: Informative string for user, may be used by AbiPy for quick fixes</li>
+<h2 id="Workflow-infrastructure">Workflow infrastructure<a class="anchor-link" href="#Workflow-infrastructure">&#182;</a></h2><p>Two different approaches:</p>
+<h4 id="AbiPy-workflows:">AbiPy workflows:<a class="anchor-link" href="#AbiPy-workflows:">&#182;</a></h4><ul>
+<li>Lightweight implementation (<em>pymatgen</em> + <em>AbiPy</em>)</li>
+<li>No database required. Object persistence provided by <a href="https://docs.python.org/3/library/pickle.html"><em>pickle</em></a></li>
+<li>Ideal tool for prototyping, testing and debugging the code </li>
 </ul>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Common-runtime-Errors">Common runtime Errors<a class="anchor-link" href="#Common-runtime-Errors">&#182;</a></h4><h4 id="Common-runtime-errors-are-associated-with-additional-metadata-and-actions-performed-by-the-code">Common runtime errors are associated with additional metadata and actions performed by the code<a class="anchor-link" href="#Common-runtime-errors-are-associated-with-additional-metadata-and-actions-performed-by-the-code">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div class="highlight"><pre><span></span><span class="c">! check dilatmx here and correct if necessary</span>
- <span class="k">if</span> <span class="p">(</span><span class="n">usewvl</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
-<span class="k">   call </span><span class="n">chkdilatmx</span><span class="p">(</span><span class="n">dt_chkdilatmx</span><span class="p">,</span><span class="n">dilatmx</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">rprimd_orig</span><span class="p">,</span><span class="n">dilatmx_errmsg</span><span class="p">)</span>
-   <span class="err">_</span><span class="n">IBM6</span><span class="p">(</span><span class="s2">&quot;dilatxm_errmsg: &quot;</span><span class="o">//</span><span class="nb">TRIM</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">))</span>
-   <span class="k">if</span> <span class="p">(</span><span class="nb">LEN_TRIM</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
-<span class="k">     </span><span class="n">MSG_WARNING</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span>
-     <span class="n">nerr_dilatmx</span> <span class="o">=</span> <span class="n">nerr_dilatmx</span><span class="o">+</span><span class="mi">1</span>
-     <span class="k">if</span> <span class="p">(</span><span class="n">nerr_dilatmx</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span>
-       <span class="c">! Write last structure before aborting, so that we can restart from it.</span>
-       <span class="c">! zion is not available, but it&#39;s not useful here.</span>
-       <span class="k">if</span> <span class="p">(</span><span class="n">me</span> <span class="o">==</span> <span class="n">master</span><span class="p">)</span> <span class="k">then</span>
-         <span class="c">! Init crystal</span>
-         <span class="n">hist</span><span class="p">%</span><span class="n">ihist</span> <span class="o">=</span> <span class="n">abihist_findIndex</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-         <span class="k">call </span><span class="n">hist2var</span><span class="p">(</span><span class="n">acell</span><span class="p">,</span><span class="n">hist</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">natom</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">xred</span><span class="p">,</span><span class="n">DEBUG</span><span class="p">)</span>
-         <span class="k">call </span><span class="n">crystal_init</span><span class="p">(</span><span class="n">amu_curr</span><span class="p">,</span><span class="n">crystal</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">natom</span><span class="p">,&amp;</span>
-           <span class="n">npsp</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">ntypat</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">nsym</span><span class="p">,</span><span class="n">rprimd</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">typat</span><span class="p">,</span><span class="n">xred</span><span class="p">,&amp;</span>
-           <span class="p">[(</span><span class="o">-</span><span class="n">one</span><span class="p">,</span> <span class="n">ii</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">ntypat</span><span class="p">)],</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">znucl</span><span class="p">,</span><span class="mi">2</span><span class="p">,.</span><span class="n">False</span><span class="p">.,.</span><span class="n">False</span><span class="p">.,</span><span class="s2">&quot;dilatmx_structure&quot;</span><span class="p">,&amp;</span>
-           <span class="n">symrel</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">symrel</span><span class="p">,</span><span class="n">tnons</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">tnons</span><span class="p">,</span><span class="n">symafm</span><span class="o">=</span><span class="n">ab_mover</span><span class="p">%</span><span class="n">symafm</span><span class="p">)</span>
-
-<span class="cp">#ifdef HAVE_NETCDF</span>
-         <span class="c">! Write netcdf file</span>
-         <span class="n">filename</span> <span class="o">=</span> <span class="n">strcat</span><span class="p">(</span><span class="n">filnam_ds4</span><span class="p">,</span> <span class="s2">&quot;_DILATMX_STRUCT.nc&quot;</span><span class="p">)</span>
-         <span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite_path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-<span class="cp">#endif</span>
-         <span class="k">call </span><span class="n">crystal</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
-       <span class="k">end if</span>
-<span class="k">       call </span><span class="n">xmpi_barrier</span><span class="p">(</span><span class="n">comm_cell</span><span class="p">)</span>
-       <span class="k">write</span> <span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s1">&#39;(a,i0,3a)&#39;</span><span class="p">)</span> <span class="p">&amp;</span>
-        <span class="s1">&#39;Dilatmx has been exceeded too many times (&#39;</span><span class="p">,</span> <span class="n">nerr_dilatmx</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span><span class="n">ch10</span><span class="p">,</span> <span class="p">&amp;</span>
-        <span class="s1">&#39;Restart your calculation from larger lattice vectors and/or a larger dilatmx&#39;</span>
-       <span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
-     <span class="k">end if</span>
-<span class="k">   else</span>
-<span class="k">     </span><span class="n">nerr_dilatmx</span><span class="o">=</span><span class="mi">0</span>
-   <span class="k">end if</span>
-<span class="k"> end if</span>
-</pre></div>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Clean-exit-with---timeline-and-smart-io-mode">Clean exit with <em>--timeline</em> and smart-io mode<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode">&#182;</a></h2><div class="highlight"><pre><span></span>cat job.sh
-
-<span class="c1">#!/bin/bash</span>
-<span class="c1">#SBATCH --ntasks=48</span>
-<span class="c1">#SBATCH --time=12:00:00</span>
-
-abinit -timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
-</pre></div>
-<ul>
-<li>Available for iterative algorithms (Relax, Scf, Nscf?)</li>
-<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching</li>
-<li>Abipy will restart the job from the previous results</li>
-<li>timelimit and prtwf -1 to reduce IO-pressure and avoid disk-quota hell </li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Abipy-Robots">Abipy Robots<a class="anchor-link" href="#Abipy-Robots">&#182;</a></h2><ul>
-<li><p>High-level interface to operate on <u>multiple files</u> with the same file extension</p>
-</li>
-<li><p>Useful for:</p>
-<ul>
-<li>convergence studies</li>
-<li>producing multiple plots</li>
-<li>building <a href="https://pandas.pydata.org/">Pandas dataframes</a> (data in tabular format powered by python)</li>
-</ul>
-</li>
-<li><p>Each <em>Robot</em> is associated to a file extension, <em>e.g.</em></p>
-<ul>
-<li>GSR.nc ➝ <em>GsrRobot</em></li>
-<li>DDB ➝ <em>DdbRobot</em></li>
-</ul>
-</li>
-<li><p><em>Robots</em> can be constructed from:</p>
-<ol>
-<li>List of filenames</li>
-<li>Directories and regular expressions</li>
-</ol>
-</li>
-<li><p>Command line interface provided by the <em>abicomp.py</em> script:</p>
-</li>
-<li><p>To generate notebook to compare multiple <em>GSR</em> files, use:</p>
-
-<pre><code>      abicomp.py gsr out1_GSR.nc  out2_GSR.nc --notebook</code></pre>
-</li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Post-processing-the-DFPT-results-available-in-the-MP-database">Post-processing the DFPT results available in the MP database<a class="anchor-link" href="#Post-processing-the-DFPT-results-available-in-the-MP-database">&#182;</a></h3><ul>
-<li>More than 1500 DFPT calculations done with abiflows (<a href="https://www.nature.com/articles/sdata201865">Petretto et al.</a>)</li>
-<li>Results available on the materials project website (including the <em>DDB</em> files) </li>
+<h4 id="AbiFlows-workflows:">AbiFlows workflows:<a class="anchor-link" href="#AbiFlows-workflows:">&#182;</a></h4><ul>
+<li>Requires <a href="https://www.mongodb.com/">MongoDb</a> database</li>
+<li>Based on <a href="https://materialsproject.github.io/fireworks/">fireworks</a></li>
+<li>Designed and optimized for <u>high-throughput applications</u></li>
 </ul>
 <hr>
 
-<p>Let's assume we want to reuse the raw data for our research work:</p>
-<ul>
-<li>Handling 1500 tabs in the web browser is not feasible</li>
-<li>We need a <u>programmatic</u> interface to automate stuff. </li>
-</ul>
-<p>With python we can easily connect the different parts of the puzzle:</p>
-<ul>
-<li>REST API to get the raw data (<em>DDB</em>) from the MP database</li>
-<li>Computation of phonons, thermodinamical properties, Born effective charges, dielectric tensor, IR spectrum with ABINIT</li>
-<li>Post-processing with AbiPy</li>
-</ul>
-<p>For a more comprehensive discussion see this 
-<a href="https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/ddb.ipynb">abitutorial</a></p>
-<!--
-The results for the rocksalt phase of MgO are available at https://materialsproject.org/materials/mp-1009129/
--->
+<p>Both approaches share the same codebase (<em>AbinitInput</em>, factory functions, AbiPy objects).</p>
+<p>Number and type of calculations are important ➝ choose the approach that suits to your needs.</p>
+
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="How-to-automate-input-file-generation-with-AbiPy">How to automate input file generation with AbiPy<a class="anchor-link" href="#How-to-automate-input-file-generation-with-AbiPy">&#182;</a></h1><p><img src="./assets/automate_input_files.jpg" width="85%" align="center"></p>
-
+<h2 id="Main-features-of-workflows">Main features of workflows<a class="anchor-link" href="#Main-features-of-workflows">&#182;</a></h2><ul>
+<li>Factory functions for typical calculations (DFPT, GW, BSE, EPH, ...)</li>
+<li>Support for different resource managers (<em>Slurm</em>, <em>PBS</em>, <em>Torque</em>, <em>SGE</em>, <em>LoadLever</em>, <em>shell</em>)</li>
+<li><em>autoparal</em>: the number of MPI processes is optimized at runtime</li>
+<li>Iterative algorithms are automatically restarted by the framework</li>
+<li>Error handlers for common runtime failures</li>
+</ul>
+<center>
+<img src="./assets/not_converged_task_2.png" width="40%" align="center">
+</center>
 </div>
 </div>
 </div></section></section><section><section>
@@ -13532,7 +13386,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">AbinitInput</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">)</span>
@@ -13552,7 +13406,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[92]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ecut&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
@@ -13569,7 +13423,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[92]:</div>
+    <div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -13593,7 +13447,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[93]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">kptopt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  
@@ -13615,7 +13469,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[94]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_autokmesh</span><span class="p">(</span><span class="n">nksmall</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -13631,7 +13485,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[94]:</div>
+    <div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -13674,10 +13528,10 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[96]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">formula</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13694,7 +13548,15 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Si2
+<pre>Full Formula (Si2)
+Reduced Formula: Si
+abc   :   3.866975   3.866975   3.866975
+angles:  60.000000  60.000000  60.000000
+Sites (2)
+  #  SP       a     b     c
+---  ----  ----  ----  ----
+  0  Si    0     0     0
+  1  Si    0.25  0.25  0.25
 </pre>
 </div>
 </div>
@@ -13712,11 +13574,10 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[97]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">pseudo</span> <span class="ow">in</span> <span class="n">inp</span><span class="o">.</span><span class="n">pseudos</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pseudo</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13751,31 +13612,17 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 </div>
 
-</div>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Pseudos-from-the-PseudoDojo-project-provide-hints-for-the-cutoff-energy.">Pseudos from the <a href="http://www.pseudo-dojo.org/">PseudoDojo project</a> provide hints for the cutoff energy.<a class="anchor-link" href="#Pseudos-from-the-PseudoDojo-project-provide-hints-for-the-cutoff-energy.">&#182;</a></h4>
+<h4 id="Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">Inside the notebook, one gets the HTML representation with links to the documentation:<a class="anchor-link" href="#Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[98]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from pseudo_dojo.core.pseudos import OfficialDojoTable</span>
-<span class="c1">#pseudo_table = OfficialDojoTable.from_dojodir(&#39;ONCVPSP-PBEsol-PDv0.4&#39;,&#39;standard&#39;)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[99]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span>
@@ -13791,7 +13638,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[99]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
@@ -13804,7 +13651,8 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 </div>
 
-</div></section><section>
+</div><aside class="notes">
+
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13812,9 +13660,11 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 </div>
 </div>
+</aside><aside class="notes">
+
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[100]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_kpath</span><span class="p">(</span><span class="n">ndivsm</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -13830,7 +13680,7 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[100]:</div>
+    <div class="prompt output_prompt">Out[9]:</div>
 
 
 
@@ -13856,6 +13706,8 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 </div>
 
 </div>
+</aside><aside class="notes">
+
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13866,6 +13718,116 @@ The results for the rocksalt phase of MgO are available at https://materialsproj
 
 </div>
 </div>
+</div>
+</aside></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="If-you-mistype-the-name-of-the-variable,-AbinitInput-raises-an-error:">If you mistype the name of the variable, AbinitInput raises an error:<a class="anchor-link" href="#If-you-mistype-the-name-of-the-variable,-AbinitInput-raises-an-error:">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">inp</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">perl</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+Cannot find variable `perl` in internal database.
+If you think this is not a typo, use:
+
+    input.set_spell_check(False)
+
+to disable spell checking. Perhaps the internal database is not in synch
+with the Abinit version you are using. Please contact the AbiPy developers.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="because-AbiPy-uses-the-internal-database-of-input-variables-(see-abimkdcocs-talk)">because AbiPy uses the internal database of input variables (see abimkdcocs talk)<a class="anchor-link" href="#because-AbiPy-uses-the-internal-database-of-input-variables-(see-abimkdcocs-talk)">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abilab</span><span class="o">.</span><span class="n">docvar</span><span class="p">(</span><span class="s2">&quot;ecut&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<h2>Default value:</h2>
+<p>None</p>
+<h2>Description:</h2>
+<p>Used for kinetic energy cutoff which controls number of planewaves at given k point by:
+(1/2)[(2 Pi)*(k+Gmax)]  2  =<b>ecut</b> for Gmax.</p>
+<p>All planewaves inside this "basis sphere" centered at k are included in the basis (except if <b>dilatmx</b> is defined).
+Can be specified in Ha (the default), Ry, eV or Kelvin, since <b>ecut</b> has the
+'<b>ENERGY</b>' characteristics. (1 Ha=27.2113845 eV)
+This is the single parameter which can have an enormous effect on the quality
+of a calculation; basically the larger <b>ecut</b> is, the better converged the
+calculation is. For fixed geometry, the total energy MUST always decrease as
+<b>ecut</b> is raised because of the variational nature of the problem.</p>
+<p><em>Usually one runs at least several calculations at various <b>ecut</b> to
+investigate the convergence needed for reliable results.</em></p>
+<p>For k-points whose coordinates are build from 0 or 1/2, the implementation of
+time-reversal symmetry that links coefficients of the wavefunctions in
+reciprocal space has been realized. See the input variable <b>istwfk</b>. If
+activated (which corresponds to the Default mode), this input variable
+<b>istwfk</b> will allow to divide the number of plane wave (npw) treated
+explicitly by a factor of two. Still, the final result should be identical
+with the 'full' set of plane waves.</p>
+<p>See the input variable <b>ecutsm</b>, for the smoothing of the kinetic energy,
+needed to optimize unit cell parameters.</p>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13904,87 +13866,13 @@ providing all the information required to execute/submit Abinit jobs:</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Example-of-manager.yml-for-laptops-(shell-adapter)">Example of <em>manager.yml</em> for laptops (shell adapter)<a class="anchor-link" href="#Example-of-manager.yml-for-laptops-(shell-adapter)">&#182;</a></h2><hr>
-
-<div class="highlight"><pre><span></span><span class="nt">qadapters</span><span class="p">:</span>
-  <span class="c1"># List of qadapters objects </span>
-  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> 
-    <span class="nt">queue</span><span class="p">:</span>
-      <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shell</span>
-      <span class="nt">qname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
-    <span class="nt">job</span><span class="p">:</span>
-       <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
-       <span class="nt">pre_run</span><span class="p">:</span> 
-           <span class="c1"># abinit exec must be in $PATH</span>
-           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">export PATH=$HOME/git_repos/abinit/_build/src/98_main:$PATH</span>
-    <span class="nt">limits</span><span class="p">:</span>
-       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30:00</span>
-       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-    <span class="nt">hardware</span><span class="p">:</span>
-       <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-       <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-       <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-       <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4Gb</span>
-</pre></div>
-<ul>
-<li><p>Examples of configuration files for clusters are available <a href="https://abinit.github.io/abipy/workflows/manager_examples.html">here</a></p>
-</li>
-<li><p>Use <em>abirun.py doc_manager</em> to get documentation inside the shell</p>
-</li>
-</ul>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="An-example-for-a-Slurm-based-cluster">An example for a Slurm-based cluster<a class="anchor-link" href="#An-example-for-a-Slurm-based-cluster">&#182;</a></h2><hr>
-
-<div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span> <span class="nl">&amp;hardware</span>
-   <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
-   <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-   <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-   <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">95Gb</span>
-
-<span class="nt">job</span><span class="p">:</span> <span class="nl">&amp;job</span>
-    <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
-    <span class="nt">modules</span><span class="p">:</span> <span class="c1"># Load modules used to compile Abinit </span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">intel/2017b</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">netCDF-Fortran/4.4.4-intel-2017b</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">abinit_8.11</span>
-    <span class="nt">pre_run</span><span class="p">:</span> <span class="s">&quot;ulimit</span><span class="nv"> </span><span class="s">-s</span><span class="nv"> </span><span class="s">unlimited&quot;</span>
-
-<span class="c1"># Slurm options.</span>
-<span class="nt">qadapters</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">queue</span><span class="p">:</span>
-       <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">slurm</span>
-       <span class="c1">#qname: Def</span>
-    <span class="nt">limits</span><span class="p">:</span>
-       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0-0:30:00</span>
-       <span class="nt">min_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-       <span class="nt">min_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-       <span class="nt">max_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
-       <span class="nt">max_num_launches</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-    <span class="nt">hardware</span><span class="p">:</span> <span class="nv">*hardware</span>
-    <span class="nt">job</span><span class="p">:</span> <span class="nv">*job</span>
-</pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="To-get-the-list-of-k-points-in-the-IBZ-as-computed-by-Abinit:">To get the list of k-points in the IBZ as computed by Abinit:<a class="anchor-link" href="#To-get-the-list-of-k-points-in-the-IBZ-as-computed-by-Abinit:">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[101]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ibz</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">abiget_ibz</span><span class="p">()</span>
@@ -14026,6 +13914,18 @@ Weights normalized to: 198.0
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Being able to call ABINIT from python is crucial for implementing automatic calculations,
+especially when symmetries and $\bf{k}$-points are involved</li>
+<li>The calculation is done in Fortran so ABINIT is always right even when it's wrong!</li>
+</ul>
+
+</div>
+</div>
 </div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14036,13 +13936,13 @@ Weights normalized to: 198.0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[102]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;paral_kgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">pconfs</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">abiget_autoparal_pconfs</span><span class="p">(</span><span class="n">max_ncpus</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best efficiency:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pconfs</span><span class="o">.</span><span class="n">sort_by_efficiency</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best speedup:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pconfs</span><span class="o">.</span><span class="n">sort_by_speedup</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1">#print(&quot;Best speedup:\n&quot;, pconfs.sort_by_speedup()[0])</span>
 </pre></div>
 
     </div>
@@ -14072,19 +13972,6 @@ Weights normalized to: 198.0
           &#39;npkpt&#39;: 5,
           &#39;npspinor&#39;: 1}}
 
-Best speedup:
- {&#39;efficiency&#39;: 0.8465,
- &#39;mem_per_cpu&#39;: 0.0,
- &#39;mpi_ncpus&#39;: 5,
- &#39;omp_ncpus&#39;: 1,
- &#39;tot_ncpus&#39;: 5,
- &#39;vars&#39;: {&#39;bandpp&#39;: 1,
-          &#39;npband&#39;: 1,
-          &#39;npfft&#39;: 1,
-          &#39;npimage&#39;: 1,
-          &#39;npkpt&#39;: 5,
-          &#39;npspinor&#39;: 1}}
-
 </pre>
 </div>
 </div>
@@ -14092,6 +13979,19 @@ Best speedup:
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>python will select the "optimal" configuration according to some criterion and constraints e.g. exclusive node allocation</li>
+<li>Crucial for implementing automatic $GW$ calculations</li>
+<li>Supporting <em>autoparal</em> for all possible cases is not trivial. </li>
+<li>For new developments (e.g. EPH) we prefer to implement smart logic in fortran </li>
+</ul>
+
+</div>
+</div>
 </div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14102,7 +14002,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[103]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_phperts</span><span class="p">(</span><span class="n">qpt</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -14118,7 +14018,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[103]:</div>
+    <div class="prompt output_prompt">Out[14]:</div>
 
 
 
@@ -14143,7 +14043,7 @@ Best speedup:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[104]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_strainperts</span><span class="p">()</span>
@@ -14159,7 +14059,7 @@ Best speedup:
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[104]:</div>
+    <div class="prompt output_prompt">Out[15]:</div>
 
 
 
@@ -14190,858 +14090,269 @@ Best speedup:
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Multiple-Datasets">Multiple Datasets<a class="anchor-link" href="#Multiple-Datasets">&#182;</a></h2><ul>
-<li>List of <em>AbinitInput</em> objects</li>
-<li><p>A handy tool to generate multiple input files with common variables:</p>
-<ul>
-<li>Convergence studies (same structure, different <em>ngkpt</em>, <em>tsmear</em> …)</li>
-<li>Input files for calculations requiring multiple steps (DFPT, $GW$)</li>
-</ul>
-</li>
-</ul>
-<h4 id="Let's-build-a-MultiDataset-containing-two-datasets:">Let's build a <em>MultiDataset</em> containing two datasets:<a class="anchor-link" href="#Let's-build-a-MultiDataset-containing-two-datasets:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[105]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">MultiDataset</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">,</span> <span class="n">ndtset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">multi</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">ecut</span><span class="o">=</span><span class="mi">4</span><span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Iterating-over-multi-gives-AbinitInput-objects:">Iterating over <em>multi</em> gives <em>AbinitInput</em> objects:<a class="anchor-link" href="#Iterating-over-multi-gives-AbinitInput-objects:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[106]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ecut&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">multi</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[106]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-set-the-variables-of-a-particular-dataset,-use:">To set the variables of a particular dataset, use:<a class="anchor-link" href="#To-set-the-variables-of-a-particular-dataset,-use:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[107]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">tsmear</span><span class="o">=</span><span class="mf">0.004</span><span class="p">)</span>
-<span class="n">multi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">tsmear</span><span class="o">=</span><span class="mf">0.008</span><span class="p">);</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-get-a-dataframe-with-the-values-of-the-variables,-use:">To get a dataframe with the values of the variables, use:<a class="anchor-link" href="#To-get-a-dataframe-with-the-values-of-the-variables,-use:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[108]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi</span><span class="o">.</span><span class="n">get_vars_dataframe</span><span class="p">(</span><span class="s2">&quot;ngkpt&quot;</span><span class="p">,</span> <span class="s2">&quot;tsmear&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[108]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ngkpt</th>
-      <th>tsmear</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>dataset 0</th>
-      <td>[2, 2, 2]</td>
-      <td>0.004</td>
-    </tr>
-    <tr>
-      <th>dataset 1</th>
-      <td>[4, 4, 4]</td>
-      <td>0.008</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="The-function-split_datasets-returns-the-list-of-AbinitInput-stored-in-MultiDataset">The function <em>split_datasets</em> returns the list of <em>AbinitInput</em> stored in <em>MultiDataset</em><a class="anchor-link" href="#The-function-split_datasets-returns-the-list-of-AbinitInput-stored-in-MultiDataset">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[109]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gs1</span><span class="p">,</span> <span class="n">gs2</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">split_datasets</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Factory-functions-for-typical-calculations">Factory functions for typical calculations<a class="anchor-link" href="#Factory-functions-for-typical-calculations">&#182;</a></h2><ul>
-<li>Functions returning <em>AbinitInput</em> or <em>MultiDataset</em> depending on the calculation type</li>
-<li><p>Minimal input from user:</p>
+<center><img src="./assets/how_does_it_work.jpg" width="50%" align="center"></center><ul>
+<li>ABINIT and AbiPy communicate through Yaml docs and netcdf files</li>
+<li>AbiPy uses the protocol to:<ul>
+<li>generate input files</li>
+<li>handle errors</li>
+<li>implement high-level logic</li>
+</ul>
+</li>
+<li>Config options required to run/submit calculations are specified in <em>manager.yml</em> </li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example-of-manager.yml-for-laptops-(shell-adapter)">Example of <em>manager.yml</em> for laptops (shell adapter)<a class="anchor-link" href="#Example-of-manager.yml-for-laptops-(shell-adapter)">&#182;</a></h2><hr>
+
+<div class="highlight"><pre><span></span><span class="nt">qadapters</span><span class="p">:</span>
+  <span class="c1"># List of qadapters objects </span>
+  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> 
+    <span class="nt">queue</span><span class="p">:</span>
+      <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shell</span>
+      <span class="nt">qname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+    <span class="nt">job</span><span class="p">:</span>
+       <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
+       <span class="nt">pre_run</span><span class="p">:</span> 
+           <span class="c1"># abinit exec must be in $PATH</span>
+           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">export PATH=$HOME/git_repos/abinit/_build/src/98_main:$PATH</span>
+    <span class="nt">limits</span><span class="p">:</span>
+       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30:00</span>
+       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="nt">hardware</span><span class="p">:</span>
+       <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+       <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+       <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+       <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4Gb</span>
+</pre></div>
 <ul>
-<li><em>structure</em> object or file providing it</li>
-<li>list of <em>pseudos</em></li>
-<li><em>metavariables</em> e.g. <em>kppra</em> for the BZ sampling</li>
-</ul>
+<li><p>Examples of configuration files for clusters available <a href="https://abinit.github.io/abipy/workflows/manager_examples.html">here</a></p>
 </li>
-<li><p>Default values designed to cover the most common scenarios</p>
-</li>
-<li>Less flexible than the low-level API but easier to use</li>
-<li>Optional arguments to change the default behaviour (smearing="gaussian:0.1 eV")</li>
-<li>For a command line interface, use the <em>abinp.py</em> script.</li>
-</ul>
-<h4 id="To-build-an-input-for-SCF+NSCF-run-with-(relaxed)-structure-from-the-materials-project-database:">To build an input for SCF+NSCF run with (relaxed) structure from the materials project database:<a class="anchor-link" href="#To-build-an-input-for-SCF+NSCF-run-with-(relaxed)-structure-from-the-materials-project-database:">&#182;</a></h4>
-<pre><code>    abinp.py ebands mp-149 
-
-
-</code></pre>
-<h3 id="Some-examples...">Some examples...<a class="anchor-link" href="#Some-examples...">&#182;</a></h3>
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Workflow-infrastructure">Workflow infrastructure<a class="anchor-link" href="#Workflow-infrastructure">&#182;</a></h2><p>Two different approaches:</p>
-<h4 id="AbiPy-workflows:">AbiPy workflows:<a class="anchor-link" href="#AbiPy-workflows:">&#182;</a></h4><ul>
-<li>Lightweight implementation (<em>pymatgen</em> + <em>AbiPy</em>)</li>
-<li>No database required. Object persistence provided by <a href="https://docs.python.org/3/library/pickle.html"><em>pickle</em></a></li>
-<li>Ideal tool for prototyping </li>
-</ul>
-<h4 id="AbiFlows-workflows:">AbiFlows workflows:<a class="anchor-link" href="#AbiFlows-workflows:">&#182;</a></h4><ul>
-<li>Requires <a href="https://www.mongodb.com/">MongoDb</a> database</li>
-<li>Based on <a href="https://materialsproject.github.io/fireworks/">fireworks</a></li>
-<li>Designed and optimized for <u>high-throughput applications</u></li>
-</ul>
-<hr>
-
-<p>Both approaches share the same codebase (<em>AbinitInput</em>, factory functions, AbiPy objects).</p>
-<p>Number and type of calculations are important ➝ choose the approach that suits to your needs.</p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Main-features">Main features<a class="anchor-link" href="#Main-features">&#182;</a></h2><ul>
-<li>Support for different resource managers (<em>Slurm</em>, <em>PBS</em>, <em>Torque</em>, <em>SGE</em>, <em>LoadLever</em>, <em>shell</em>)</li>
-<li><em>autoparal</em>: the number of MPI processes is optimized at runtime</li>
-<li>Error handlers for common runtime failures</li>
-<li>Iterative algorithms are automatically restarted by the framework</li>
-</ul>
-<p><img src="./assets/not_converged_task_2.png" width="45%" align="center"></p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Object-oriented-API-and-inheritance-diagram">Object-oriented API and inheritance diagram<a class="anchor-link" href="#Object-oriented-API-and-inheritance-diagram">&#182;</a></h2><ul>
-<li>Task objects to handle different types of calculations</li>
-<li>Automated handling of dependencies (WFK, DEN, DDB, …)</li>
-<li><p>Workflow generators for common cases</p>
-<ul>
-<li>Relaxation</li>
-<li>Band structures</li>
-<li>Phonons</li>
-</ul>
-</li>
-<li><p>Templates for database insertion based on <em>mongoengine</em> and <em>mongodb</em> documents</p>
+<li><p>Use <em>abirun.py doc_manager</em> to get documentation inside the shell</p>
 </li>
 </ul>
-<p><img src="./assets/class_hierarchy.png" width="70%" align="center"></p>
-<!-- 
-* Automatized choice of number of cores (*autoparal*)
-* Error handling
--->
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="How-to-build-an-AbiPy-workflow">How to build an AbiPy workflow<a class="anchor-link" href="#How-to-build-an-AbiPy-workflow">&#182;</a></h3><!--
-https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/dfpt/lesson_dfpt.ipynb
-
-The function makes some assumptions for important parameters such as the crystalline structure and the pseudos. This is done on purpose to keep the code as simple as possible. It should not be so difficult to generalize the implementation to take into account other cases. Let's start to play with our new function:
-
-To explain in more details the syntax and the API used in AbiPy to build a flow with dependencies, let's build a Flow from scratch.
--->
-
-<p>Let's start with an empty flow in the <em>hello_flow</em> directory</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[112]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">abipy</span> <span class="k">import</span> <span class="n">flowtk</span>
-<span class="n">hello_flow</span> <span class="o">=</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">Flow</span><span class="p">(</span><span class="n">workdir</span><span class="o">=</span><span class="s2">&quot;hello_flow&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>and use the <a href="https://www.graphviz.org/">graphviz tool</a> after each step to show what's happening.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[113]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[113]:</div>
-
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="252pt" height="66pt"
- viewBox="0.00 0.00 251.99 66.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(11.9927 40)">
-<title>flow</title>
-<polygon fill="#ffffff" stroke="transparent" points="-11.9927,26 -11.9927,-40 239.9927,-40 239.9927,26 -11.9927,26"/>
-<text text-anchor="start" x=".0073" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
-</g>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="We-also-need-a-function-returning-two-inputs-for-SCF/NSCF-run:">We also need a function returning two inputs for SCF/NSCF run:<a class="anchor-link" href="#We-also-need-a-function-returning-two-inputs-for-SCF/NSCF-run:">&#182;</a></h4>
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[114]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_scf_nscf_inputs</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Build and return two input files for the GS-SCF and the GS-NSCF tasks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">multi</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">MultiDataset</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">,</span> <span class="n">ndtset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="c1"># Set global variables (dataset1 and dataset2)</span>
-    <span class="n">multi</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">ecut</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nband</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-    <span class="c1"># Dataset 1 (GS-SCF run)</span>
-    <span class="n">multi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_kmesh</span><span class="p">(</span><span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="n">shiftk</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">multi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">tolvrs</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
-
-    <span class="c1"># Dataset 2 (GS-NSCF run on a k-path)</span>
-    <span class="n">kptbounds</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="c1"># L point</span>
-        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="c1"># Gamma point</span>
-        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="c1"># X point</span>
-    <span class="p">]</span>
-
-    <span class="n">multi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_kpath</span><span class="p">(</span><span class="n">ndivsm</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">kptbounds</span><span class="o">=</span><span class="n">kptbounds</span><span class="p">)</span>
-    <span class="n">multi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">tolwfr</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
-    
-    <span class="c1"># Return two input files for the GS and the NSCF run</span>
-    <span class="n">scf_input</span><span class="p">,</span> <span class="n">nscf_input</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">split_datasets</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">scf_input</span><span class="p">,</span> <span class="n">nscf_input</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="In-terms-of-factory-functions,-similar-results-can-be-obtained-with:">In terms of factory functions, similar results can be obtained with:<a class="anchor-link" href="#In-terms-of-factory-functions,-similar-results-can-be-obtained-with:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[115]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">abipy.abio.factories</span> <span class="k">import</span> <span class="n">ebands_input</span>
-<span class="n">scf_input</span><span class="p">,</span> <span class="n">nscf_input</span> <span class="o">=</span> <span class="n">ebands_input</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-add-a-Task-we-create-an-AbinitInput-and-we-register-it-in-the-flow:">To add a <em>Task</em> we create an <em>AbinitInput</em> and we register it in the flow:<a class="anchor-link" href="#To-add-a-Task-we-create-an-AbinitInput-and-we-register-it-in-the-flow:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[116]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scf_input</span><span class="p">,</span> <span class="n">nscf_input</span> <span class="o">=</span> <span class="n">make_scf_nscf_inputs</span><span class="p">()</span>
-
-<span class="n">hello_flow</span><span class="o">.</span><span class="n">register_scf_task</span><span class="p">(</span><span class="n">scf_input</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">hello_flow</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[116]:</div>
-
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="252pt" height="104pt"
- viewBox="0.00 0.00 251.99 104.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(11.9927 78)">
-<title>flow</title>
-<polygon fill="#ffffff" stroke="transparent" points="-11.9927,26 -11.9927,-78 239.9927,-78 239.9927,26 -11.9927,26"/>
-<text text-anchor="start" x=".0073" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
-<g id="clust1" class="cluster">
-<title>clusterw0</title>
-<path fill="#e0eeee" stroke="#000000" d="M88.2381,.3591C88.2381,.3591 140.2381,.3591 140.2381,.3591 146.2381,.3591 152.2381,-5.6409 152.2381,-11.6409 152.2381,-11.6409 152.2381,-61.6409 152.2381,-61.6409 152.2381,-67.6409 146.2381,-73.6409 140.2381,-73.6409 140.2381,-73.6409 88.2381,-73.6409 88.2381,-73.6409 82.2381,-73.6409 76.2381,-67.6409 76.2381,-61.6409 76.2381,-61.6409 76.2381,-11.6409 76.2381,-11.6409 76.2381,-5.6409 82.2381,.3591 88.2381,.3591"/>
-<text text-anchor="middle" x="114.2381" y="-58.4409" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
-</g>
-<!-- w0_t0 -->
-<g id="node1" class="node">
-<title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="114.4762" cy="-25.2818" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="114.4762" y="-26.8818" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
-<text text-anchor="middle" x="114.4762" y="-18.8818" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-select-the-first-work:">To select the first <em>work</em>:<a class="anchor-link" href="#To-select-the-first-work:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[117]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[117]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;Work, node_id=567, workdir=hello_flow/w0&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-select-the-first-task-of-the-first-work:">To select the first <em>task</em> of the first <em>work</em>:<a class="anchor-link" href="#To-select-the-first-task-of-the-first-work:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[118]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[118]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;ScfTask, node_id=568, workdir=hello_flow/w0/t0&gt;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
 
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="How-to-define-dependencies">How to define dependencies<a class="anchor-link" href="#How-to-define-dependencies">&#182;</a></h3><ul>
-<li>Let's add NSCF calculation that depends on the <em>scf_task</em> through the DEN file.</li>
-<li>Dependencies are specified via the {<em>task</em>: "file_ext"} dictionary</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[119]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hello_flow</span><span class="o">.</span><span class="n">register_nscf_task</span><span class="p">(</span><span class="n">nscf_input</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="p">{</span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">},</span> 
-                              <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">hello_flow</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="s2">&quot;dot&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[119]:</div>
-
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="261pt" height="120pt"
- viewBox="0.00 0.00 260.51 120.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 116)">
-<title>flow</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-116 256.5067,-116 256.5067,4 -4,4"/>
-<text text-anchor="start" x="12.2607" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
-<g id="clust1" class="cluster">
-<title>clusterw0</title>
-<path fill="#e0eeee" stroke="#000000" d="M20,-30C20,-30 232.5067,-30 232.5067,-30 238.5067,-30 244.5067,-36 244.5067,-42 244.5067,-42 244.5067,-92 244.5067,-92 244.5067,-98 238.5067,-104 232.5067,-104 232.5067,-104 20,-104 20,-104 14,-104 8,-98 8,-92 8,-92 8,-42 8,-42 8,-36 14,-30 20,-30"/>
-<text text-anchor="middle" x="126.2533" y="-88.8" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
-</g>
-<!-- w0_t0 -->
-<g id="node1" class="node">
-<title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="43.9439" cy="-56" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="43.9439" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
-<text text-anchor="middle" x="43.9439" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
-</g>
-<!-- w0_t1 -->
-<g id="node2" class="node">
-<title>w0_t1</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="205.5834" cy="-56" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="205.5834" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t1</text>
-<text text-anchor="middle" x="205.5834" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w0_t1 -->
-<g id="edge1" class="edge">
-<title>w0_t0&#45;&gt;w0_t1</title>
-<path fill="none" stroke="#ff0000" d="M72.0993,-56C97.5556,-56 135.3585,-56 164.2429,-56"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="164.4417,-59.5001 174.4416,-56 164.4416,-52.5001 164.4417,-59.5001"/>
-<text text-anchor="middle" x="123.274" y="-58.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
 </div>
 </div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="A-Work-is-a-list-of-Tasks-and-we-can-iterate-with-the-syntax:">A <em>Work</em> is a list of <em>Tasks</em> and we can iterate with the syntax:<a class="anchor-link" href="#A-Work-is-a-list-of-Tasks-and-we-can-iterate-with-the-syntax:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[120]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;ScfTask, node_id=568, workdir=hello_flow/w0/t0&gt;
-&lt;NscfTask, node_id=569, workdir=hello_flow/w0/t1&gt;
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div><aside class="notes">
 
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="A-more-complicated-dependency:">A more complicated dependency:<a class="anchor-link" href="#A-more-complicated-dependency:">&#182;</a></h3><ul>
-<li><p>We want to add another <em>NscTask</em> with a different value of bands</p>
-</li>
-<li><p>The new task should read the WFK file produced by <em>w0_t1</em> 
-and use the DEN file produced by the first task <em>w0_t0</em></p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">deps</span> <span class="o">=</span> <span class="p">{</span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">,</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span> <span class="s2">&quot;WFK&quot;</span><span class="p">}</span>
-</pre></div>
-<!--
-Excellent, we managed to build our first AbiPy flow with inter-dependent tasks in just six lines of code (including the three calls to graphviz). 
+<h2 id="An-example-for-a-Slurm-based-cluster">An example for a Slurm-based cluster<a class="anchor-link" href="#An-example-for-a-Slurm-based-cluster">&#182;</a></h2><hr>
 
-Well, the syntax for the new deps, it's just:
+<div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span> <span class="nl">&amp;hardware</span>
+   <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+   <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+   <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+   <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">95Gb</span>
 
-deps = {hello_flow[0][0]: "DEN", hello_flow[0][1]: "WFK"}
-but we should also change the input variable nband in the nscf_input before creating the new NscTask (remember that building a Task requires an AbinitInput object and a list of dependencies, if any).
+<span class="nt">job</span><span class="p">:</span> <span class="nl">&amp;job</span>
+    <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
+    <span class="nt">modules</span><span class="p">:</span> <span class="c1"># Load modules used to compile Abinit </span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">intel/2017b</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">netCDF-Fortran/4.4.4-intel-2017b</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">abinit_8.11</span>
+    <span class="nt">pre_run</span><span class="p">:</span> <span class="s">&quot;ulimit</span><span class="nv"> </span><span class="s">-s</span><span class="nv"> </span><span class="s">unlimited&quot;</span>
 
-Now there are two ways to increase nband: the wrong way and the correct one! Let's start from the wrong way because it's always useful to learn from our mistakes. Let's print some values just for the record:
--->
-</div>
-</div>
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[121]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t1</span> <span class="o">=</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="c1"># Copy the input of t1 and change nband</span>
-<span class="n">new_input</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">new_with_vars</span><span class="p">(</span><span class="n">nband</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>  
-
-<span class="n">deps</span> <span class="o">=</span> <span class="p">{</span><span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">,</span> <span class="n">hello_flow</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span> <span class="s2">&quot;WFK&quot;</span><span class="p">}</span>
-
-<span class="n">hello_flow</span><span class="o">.</span><span class="n">register_nscf_task</span><span class="p">(</span><span class="n">new_input</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="n">deps</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">hello_flow</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="s2">&quot;dot&quot;</span><span class="p">)</span>
+<span class="c1"># Slurm options.</span>
+<span class="nt">qadapters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">queue</span><span class="p">:</span>
+       <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">slurm</span>
+       <span class="c1">#qname: Def</span>
+    <span class="nt">limits</span><span class="p">:</span>
+       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0-0:30:00</span>
+       <span class="nt">min_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+       <span class="nt">min_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+       <span class="nt">max_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
+       <span class="nt">max_num_launches</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">hardware</span><span class="p">:</span> <span class="nv">*hardware</span>
+    <span class="nt">job</span><span class="p">:</span> <span class="nv">*job</span>
 </pre></div>
 
-    </div>
 </div>
 </div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[121]:</div>
-
-
-
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="427pt" height="170pt"
- viewBox="0.00 0.00 427.46 170.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 166)">
-<title>flow</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-166 423.4635,-166 423.4635,4 -4,4"/>
-<text text-anchor="start" x="95.7391" y="-6.8" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=566, workdir=hello_flow</text>
-<g id="clust1" class="cluster">
-<title>clusterw0</title>
-<path fill="#e0eeee" stroke="#000000" d="M20,-30C20,-30 399.4635,-30 399.4635,-30 405.4635,-30 411.4635,-36 411.4635,-42 411.4635,-42 411.4635,-142 411.4635,-142 411.4635,-148 405.4635,-154 399.4635,-154 399.4635,-154 20,-154 20,-154 14,-154 8,-148 8,-142 8,-142 8,-42 8,-42 8,-36 14,-30 20,-30"/>
-<text text-anchor="middle" x="209.7318" y="-138.8" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
-</g>
-<!-- w0_t0 -->
-<g id="node1" class="node">
-<title>w0_t0</title>
-<ellipse fill="#ff0000" stroke="#ff0000" cx="43.9439" cy="-92" rx="27.8878" ry="18"/>
-<text text-anchor="middle" x="43.9439" y="-93.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
-<text text-anchor="middle" x="43.9439" y="-85.6" font-family="Times,serif" font-size="8.00" fill="#000000">ScfTask</text>
-</g>
-<!-- w0_t1 -->
-<g id="node2" class="node">
-<title>w0_t1</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="205.5834" cy="-56" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="205.5834" y="-57.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t1</text>
-<text text-anchor="middle" x="205.5834" y="-49.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w0_t1 -->
-<g id="edge1" class="edge">
-<title>w0_t0&#45;&gt;w0_t1</title>
-<path fill="none" stroke="#ff0000" d="M70.6353,-86.0553C96.7842,-80.2315 136.9238,-71.2917 166.6341,-64.6747"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="167.6681,-68.0303 176.668,-62.44 166.1463,-61.1977 167.6681,-68.0303"/>
-<text text-anchor="middle" x="123.274" y="-78.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
-</g>
-<!-- w0_t2 -->
-<g id="node3" class="node">
-<title>w0_t2</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="372.5403" cy="-81" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="372.5403" y="-82.6" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t2</text>
-<text text-anchor="middle" x="372.5403" y="-74.6" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- w0_t0&#45;&gt;w0_t2 -->
-<g id="edge2" class="edge">
-<title>w0_t0&#45;&gt;w0_t2</title>
-<path fill="none" stroke="#ff0000" d="M68.629,-100.5783C84.1232,-105.2144 104.632,-110 123.274,-110 123.274,-110 123.274,-110 289.0619,-110 306.6816,-110 325.2926,-104.1638 340.4596,-97.7277"/>
-<polygon fill="#ff0000" stroke="#ff0000" points="342.2138,-100.7757 349.884,-93.4669 339.3301,-94.3973 342.2138,-100.7757"/>
-<text text-anchor="middle" x="205.5834" y="-112.8" font-family="Times,serif" font-size="14.00" fill="#000000">DEN</text>
-</g>
-<!-- w0_t1&#45;&gt;w0_t2 -->
-<g id="edge3" class="edge">
-<title>w0_t1&#45;&gt;w0_t2</title>
-<path fill="none" stroke="#c85064" d="M235.8181,-60.5273C262.8849,-64.5803 302.769,-70.5525 332.4824,-75.0018"/>
-<polygon fill="#c85064" stroke="#c85064" points="332.1225,-78.4868 342.5306,-76.5064 333.1592,-71.564 332.1225,-78.4868"/>
-<text text-anchor="middle" x="289.0619" y="-72.8" font-family="Times,serif" font-size="14.00" fill="#000000">WFK</text>
-</g>
-</g>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 </aside></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Tasks-can-be-connected-to-external-files:">Tasks can be connected to external files:<a class="anchor-link" href="#Tasks-can-be-connected-to-external-files:">&#182;</a></h4>
+<h2 id="Why-two-formats?">Why two formats?<a class="anchor-link" href="#Why-two-formats?">&#182;</a></h2><p>Each format has pros and cons:</p>
+<ul>
+<li><p><strong>YAML</strong></p>
+<ul>
+<li>Used for small documents:<ul>
+<li>error messages in log file</li>
+<li><em>autoparal</em> section</li>
+<li>list of DFPT <em>perturbations</em> </li>
+</ul>
+</li>
+<li>Easy to write with plain Fortran write (provided doc is <em>flat</em>) </li>
+<li>Not designed for big-data and performance  </li>
+<li>There are still speciaize cases in which Yaml can be used to represent results (cfr Theo's talk) but
+Yaml should be used when both human- and machine-readability are wanted!</li>
+</ul>
+</li>
+<li><p><strong>Netcdf4</strong></p>
+<ul>
+<li>Portable binary format. Can handle big-data and <u>metadata</u> in an efficient way</li>
+<li>Support for parallel MPI-IO (HDF5)</li>
+<li><a href="https://www.etsf.eu/fileformats">ETSF-IO specifications</a> for crystalline structures, wavefunctions, densities…</li>
+<li>Still, ETSF-IO specs are not enough as we need to add <em>hdr_t</em> and lot of physical properties 
+are not covered by the standard</li>
+<li>A machine-readable format is also human-readable. Just put some python logic around it! </li>
+</ul>
+</li>
+</ul>
+
 </div>
 </div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Error-messages-in-Yaml">Error messages in Yaml<a class="anchor-link" href="#Error-messages-in-Yaml">&#182;</a></h2><p></p><h4 id="Fortran-API">Fortran API<a class="anchor-link" href="#Fortran-API">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">MSG_ERROR</span><span class="p">(</span><span class="s2">&quot;Fatal error!&quot;</span><span class="p">)</span>
+<span class="n">MSG_BUG</span><span class="p">(</span><span class="s2">&quot;This is a bug!&quot;</span><span class="p">)</span>
+<span class="n">ABI_CHECK</span><span class="p">(</span><span class="n">natom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sjoin</span><span class="p">(</span><span class="s2">&quot;Input natom must be &gt; 0 but was:&quot;</span><span class="p">,</span> <span class="n">itoa</span><span class="p">(</span><span class="n">natom</span><span class="p">))</span>
+</pre></div>
+<ul>
+<li>Macros to call the error handler and MPI_ABORT to terminates all processes </li>
+<li>Never ever use plain Fortran <em>stop</em> in MPI codes </li>
+</ul>
+<h4 id="Yaml-doc-printed-to-log-file-(if-master)-and--__ABI_ABORT_FILE__">Yaml doc printed to log file (if master) and  <code>__ABI_ABORT_FILE__</code><a class="anchor-link" href="#Yaml-doc-printed-to-log-file-(if-master)-and--__ABI_ABORT_FILE__">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!ERROR</span>
+<span class="nt">src_file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">m_invars1.F90</span>
+<span class="nt">src_line</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">314</span>
+<span class="nt">mpi_rank</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">message</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+    <span class="no">Input natom must be &gt; 0, but was -42 </span>
+<span class="nn">...</span>
+</pre></div>
+<ul>
+<li><em>src_file</em> and <em>str_line</em> added by CPP preprocessor (see <em>abi_common.h</em>)</li>
+<li><em>message</em>: Informative string for users. It might be used by AbiPy for quick fixes 
+although we prefer a more robust approach...</li>
+</ul>
+
 </div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Specialized-error-classes">Specialized error classes<a class="anchor-link" href="#Specialized-error-classes">&#182;</a></h2><ul>
+<li>Runtime errors that appear with a certain frequency are associated to specialized error classes:  <p></p></li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
+</pre></div>
+<ul>
+<li><p>These classes bring metadata and/or imply some action at the Fortran level</p>
+</li>
+<li><p>The presence of the Yaml Error in the log file triggers specialized logic in python:</p>
+</li>
+</ul>
+<center><img src="./assets/dilatmx_2.png" width="25%" align="center"></center><ul>
+<li>As usual, error handling requires some discipline 🧘...</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Fortran-handler-based-on-YAML-+-netcdf">Fortran handler based on YAML + netcdf<a class="anchor-link" href="#Fortran-handler-based-on-YAML-+-netcdf">&#182;</a></h2><p></p><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">chkdilatmx</span><span class="p">(</span><span class="n">dt_chkdilatmx</span><span class="p">,</span> <span class="n">dilatmx</span><span class="p">,</span> <span class="n">rprimd</span><span class="p">,</span> <span class="n">rprimd_orig</span><span class="p">,</span> <span class="n">dilatmx_errmsg</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">len_trim</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
+<span class="k">  </span><span class="n">nerr_dilatmx</span> <span class="o">=</span> <span class="n">nerr_dilatmx</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nerr_dilatmx</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span>
+    <span class="c">! Write last structure before aborting so that we can restart from it.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">my_rank</span> <span class="o">==</span> <span class="n">master</span><span class="p">)</span> <span class="k">then</span>
+<span class="k">      </span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite_path</span><span class="p">(</span><span class="s2">&quot;out_DILATMX_STRUCT.nc&quot;</span><span class="p">)))</span>
+    <span class="k">end if</span>
+<span class="k">    call </span><span class="n">xmpi_barrier</span><span class="p">(</span><span class="n">comm_cell</span><span class="p">)</span>
+    <span class="k">write</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s1">&#39;(a,i0,3a)&#39;</span><span class="p">)</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;Dilatmx has been exceeded too many times (&#39;</span><span class="p">,</span> <span class="n">nerr_dilatmx</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span><span class="n">ch10</span><span class="p">,</span> <span class="p">&amp;</span>
+      <span class="s1">&#39;Restart calculation from larger lattice vectors and/or a larger dilatmx&#39;</span>
+    <span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
+  <span class="k">end if</span>
+<span class="k">end if</span>
+</pre></div>
+<ul>
+<li>If <code>!DilatmxError</code> in log file, AbiPy expects a ncfile with the last structure</li>
+<li>Note MPI_BARRIER to guarantee that the ncfile is written before MPI_ABORT</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Netcdf-files-in-Abinit">Netcdf files in Abinit<a class="anchor-link" href="#Netcdf-files-in-Abinit">&#182;</a></h2><h4 id="Phylosophy">Phylosophy<a class="anchor-link" href="#Phylosophy">&#182;</a></h4><ul>
+<li>A ncfile is a container of "objects"</li>
+<li>Each object implements the <em>ncwrite</em> method to dump its status</li>
+<li>Client code uses these methods to implement <em>composition</em></li>
+<li>A <em>GSR.nc</em> file, for instance, has a <em>crystal</em>, an <em>header</em>, <em>ebands</em> and <em>results_gs</em></li>
+</ul>
+<h4 id="Fortran-code-for-GSR.nc">Fortran code for GSR.nc<a class="anchor-link" href="#Fortran-code-for-GSR.nc">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="c">! Write crystal and band structure energies.</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">fform_den</span><span class="p">,</span> <span class="n">nc_define</span><span class="o">=</span><span class="p">.</span><span class="n">True</span><span class="p">.)</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">ebands</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
+<span class="c">! Add energy, forces, stresses</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">results_gs</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">ecut</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">pawecutdg</span><span class="p">))</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">nf90_close</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
+</pre></div>
+<h4 id="The-same-pattern-can-be-used-for-other-files">The same pattern can be used for other files<a class="anchor-link" href="#The-same-pattern-can-be-used-for-other-files">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;out_PHDOS.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">cryst</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">))</span>
+<span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">phdos</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
+<span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nf90_close</span><span class="p">(</span><span class="n">ncid</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Advantages">Advantages<a class="anchor-link" href="#Advantages">&#182;</a></h4><ul>
+<li>Code reuse: implement extra logic just for the <em>extra data</em></li>
+<li>Standardized format for structure, hdr, crystal, ebands ...</li>
+<li>Post-processing tools need metadata (e.g. structure) to interpret the data </li>
+<li>Less boiler-plate code to implement parsers and post-processing tools</li>
+</ul>
+<h4 id="Abipy-implementation-based-on-mixins">Abipy implementation based on mixins<a class="anchor-link" href="#Abipy-implementation-based-on-mixins">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GsrFile</span><span class="p">(</span><span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This file contains ground-state results&quot;&quot;&quot;</span>
+
+<span class="k">class</span> <span class="nc">FatBandsFile</span><span class="p">(</span><span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This file contains LM-projected bands&quot;&quot;&quot;</span>
+</pre></div>
+<h4 id="Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-Python-language">Easy-to-use API that plays well with the dynamic nature of the Python language<a class="anchor-link" href="#Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-Python-language">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;out_GSR.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_FATBANDS.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_WFK.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_SIGEPH.nc&quot;</span><span class="p">):</span>
+    <span class="n">abifile</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">abifile</span><span class="o">.</span><span class="n">ebands</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[122]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">flow_with_file</span> <span class="o">=</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">Flow</span><span class="p">(</span><span class="n">workdir</span><span class="o">=</span><span class="s2">&quot;flow_with_file&quot;</span><span class="p">)</span>
-
-<span class="n">den_filepath</span> <span class="o">=</span> <span class="n">abidata</span><span class="o">.</span><span class="n">ref_file</span><span class="p">(</span><span class="s2">&quot;si_DEN.nc&quot;</span><span class="p">)</span>
-<span class="n">flow_with_file</span><span class="o">.</span><span class="n">register_nscf_task</span><span class="p">(</span><span class="n">nscf_input</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="p">{</span><span class="n">den_filepath</span><span class="p">:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">})</span>
-
-<span class="k">for</span> <span class="n">nband</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]:</span>
-    <span class="n">flow_with_file</span><span class="o">.</span><span class="n">register_nscf_task</span><span class="p">(</span><span class="n">nscf_input</span><span class="o">.</span><span class="n">new_with_vars</span><span class="p">(</span><span class="n">nband</span><span class="o">=</span><span class="n">nband</span><span class="p">),</span> 
-                                      <span class="n">deps</span><span class="o">=</span><span class="p">{</span><span class="n">den_filepath</span><span class="p">:</span> <span class="s2">&quot;DEN&quot;</span><span class="p">},</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nband in tasks:&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">input</span><span class="p">[</span><span class="s2">&quot;nband&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">flow_with_file</span><span class="o">.</span><span class="n">iflat_tasks</span><span class="p">()])</span>
-
-<span class="n">flow_with_file</span><span class="o">.</span><span class="n">get_graphviz</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsr</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;npwarr&quot;</span><span class="p">,</span> <span class="s2">&quot;pspso&quot;</span><span class="p">,</span> <span class="s2">&quot;ecutsm&quot;</span><span class="p">,</span> <span class="s2">&quot;codvsn&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gsr</span><span class="o">.</span><span class="n">hdr</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -15058,93 +14369,83 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>nband in tasks: [8, 10, 20]
+<pre>npwarr [181 178 193 195 180 177 193 196 193 189 193 186 202 195 192 190 192 198
+ 198 194 190 194 195 194 197 198 197 196 200]
+pspso [0]
+ecutsm 0.0
+codvsn 8.0.6
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Objects are constructed lazily from file</span>
+<span class="c1">#print(gsr.hdr.to_string())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div><aside class="notes">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsr</span><span class="o">.</span><span class="n">energy_terms</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[122]:</div>
+    <div class="prompt output_prompt">Out[18]:</div>
 
 
 
-<div class="output_svg output_subarea output_execute_result">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: flow Pages: 1 -->
-<svg width="343pt" height="231pt"
- viewBox="0.00 0.00 343.00 231.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 205)">
-<title>flow</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,26 -4,-205 339,-205 339,26 -4,26"/>
-<text text-anchor="start" x="42.6143" y="15.2" font-family="Times,serif" font-size="14.00" fill="#000000">Flow, node_id=571, workdir=flow_with_file</text>
-<g id="clust1" class="cluster">
-<title>clusterw0</title>
-<path fill="#e0eeee" stroke="#000000" d="M21.2944,-127.3264C21.2944,-127.3264 74.2944,-127.3264 74.2944,-127.3264 80.2944,-127.3264 86.2944,-133.3264 86.2944,-139.3264 86.2944,-139.3264 86.2944,-189.3264 86.2944,-189.3264 86.2944,-195.3264 80.2944,-201.3264 74.2944,-201.3264 74.2944,-201.3264 21.2944,-201.3264 21.2944,-201.3264 15.2944,-201.3264 9.2944,-195.3264 9.2944,-189.3264 9.2944,-189.3264 9.2944,-139.3264 9.2944,-139.3264 9.2944,-133.3264 15.2944,-127.3264 21.2944,-127.3264"/>
-<text text-anchor="middle" x="47.7944" y="-186.1264" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w0)</text>
-</g>
-<g id="clust2" class="cluster">
-<title>clusterw1</title>
-<path fill="#e0eeee" stroke="#000000" d="M197.1446,-127.4383C197.1446,-127.4383 251.1446,-127.4383 251.1446,-127.4383 257.1446,-127.4383 263.1446,-133.4383 263.1446,-139.4383 263.1446,-139.4383 263.1446,-189.4383 263.1446,-189.4383 263.1446,-195.4383 257.1446,-201.4383 251.1446,-201.4383 251.1446,-201.4383 197.1446,-201.4383 197.1446,-201.4383 191.1446,-201.4383 185.1446,-195.4383 185.1446,-189.4383 185.1446,-189.4383 185.1446,-139.4383 185.1446,-139.4383 185.1446,-133.4383 191.1446,-127.4383 197.1446,-127.4383"/>
-<text text-anchor="middle" x="224.1446" y="-186.2383" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w1)</text>
-</g>
-<g id="clust3" class="cluster">
-<title>clusterw2</title>
-<path fill="#e0eeee" stroke="#000000" d="M134.7061,-.1723C134.7061,-.1723 188.7061,-.1723 188.7061,-.1723 194.7061,-.1723 200.7061,-6.1723 200.7061,-12.1723 200.7061,-12.1723 200.7061,-62.1723 200.7061,-62.1723 200.7061,-68.1723 194.7061,-74.1723 188.7061,-74.1723 188.7061,-74.1723 134.7061,-74.1723 134.7061,-74.1723 128.7061,-74.1723 122.7061,-68.1723 122.7061,-62.1723 122.7061,-62.1723 122.7061,-12.1723 122.7061,-12.1723 122.7061,-6.1723 128.7061,-.1723 134.7061,-.1723"/>
-<text text-anchor="middle" x="161.7061" y="-58.9723" font-family="Times,serif" font-size="14.00" fill="#000000">Work (w2)</text>
-</g>
-<!-- w0_t0 -->
-<g id="node1" class="node">
-<title>w0_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="47.8413" cy="-153.5737" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="47.8413" y="-155.1737" font-family="Times,serif" font-size="8.00" fill="#000000">w0_t0</text>
-<text text-anchor="middle" x="47.8413" y="-147.1737" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- w1_t0 -->
-<g id="node2" class="node">
-<title>w1_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="223.9178" cy="-153.5161" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="223.9178" y="-155.1161" font-family="Times,serif" font-size="8.00" fill="#000000">w1_t0</text>
-<text text-anchor="middle" x="223.9178" y="-147.1161" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- w2_t0 -->
-<g id="node3" class="node">
-<title>w2_t0</title>
-<ellipse fill="#c85064" stroke="#c85064" cx="161.2832" cy="-26.3195" rx="30.8467" ry="18"/>
-<text text-anchor="middle" x="161.2832" y="-27.9195" font-family="Times,serif" font-size="8.00" fill="#000000">w2_t0</text>
-<text text-anchor="middle" x="161.2832" y="-19.9195" font-family="Times,serif" font-size="8.00" fill="#000000">NscfTask</text>
-</g>
-<!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc -->
-<g id="node4" class="node">
-<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc</title>
-<ellipse fill="#6633ff" stroke="#6633ff" cx="167.5933" cy="-101.2394" rx="167.734" ry="18"/>
-<text text-anchor="start" x="25.4409" y="-98.8394" font-family="Times,serif" font-size="8.00" fill="#000000">FileNode, node_id=574, rpath=../../git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc</text>
-</g>
-<!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w0_t0 -->
-<g id="edge1" class="edge">
-<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w0_t0</title>
-<path fill="none" stroke="#6633ff" d="M127.3845,-118.8115C112.6993,-125.2293 96.2385,-132.423 82.1179,-138.5941"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="80.5281,-135.4692 72.7665,-142.6809 83.3313,-141.8834 80.5281,-135.4692"/>
-</g>
-<!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w1_t0 -->
-<g id="edge2" class="edge">
-<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w1_t0</title>
-<path fill="none" stroke="#6633ff" d="M186.977,-119.23C191.1138,-123.0696 195.5314,-127.1697 199.8205,-131.1506"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="197.6032,-133.8678 207.3137,-138.1053 202.3651,-128.7371 197.6032,-133.8678"/>
-</g>
-<!-- /Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w2_t0 -->
-<g id="edge3" class="edge">
-<title>/Users/gmatteo/git_repos/abipy/abipy/data/refs/si_ebands/si_DEN.nc&#45;&gt;w2_t0</title>
-<path fill="none" stroke="#6633ff" d="M166.0658,-83.1033C165.3502,-74.6079 164.4809,-64.2865 163.6807,-54.7854"/>
-<polygon fill="#6633ff" stroke="#6633ff" points="167.1455,-54.2191 162.8185,-44.5481 160.1702,-54.8066 167.1455,-54.2191"/>
-</g>
-</g>
-</svg>
 
+<div class="output_text output_subarea output_execute_result">
+<pre>Term                  Value
+e_localpsp            -68.62575616682041 eV
+e_eigenvalues         4.453251781809304 eV
+e_ewald               -226.94266538122858 eV
+e_hartree             14.989583868349118 eV
+e_corepsp             2.262480246606245 eV
+e_corepspdc           0.0 eV
+e_kinetic             80.6603511758275 eV
+e_nonlocalpsp         52.15353045099117 eV
+e_entropy             0.0 eV
+entropy               0.0 eV
+e_xc                  -95.73399250916707 eV
+e_xcdc                0.0 eV
+e_paw                 0.0 eV
+e_pawdc               0.0 eV
+e_elecfield           0.0 eV
+e_magfield            0.0 eV
+e_fermie              5.5984532787385985 eV
+e_sicdc               0.0 eV
+e_exactX              0.0 eV
+h0                    0.0 eV
+e_electronpositron    0.0 eV
+edc_electronpositron  0.0 eV
+e0_electronpositron   0.0 eV
+e_monopole            0.0 eV</pre>
 </div>
 
 </div>
@@ -15152,190 +14453,237 @@ Now there are two ways to increase nband: the wrong way and the correct one! Let
 </div>
 </div>
 
-</div></section></section><section><section>
+</div>
+</aside><aside class="notes">
+
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Phonon-band-structure-of-AlAs">Phonon band structure of AlAs<a class="anchor-link" href="#Phonon-band-structure-of-AlAs">&#182;</a></h2><p>Now we are finally ready for the calculation of the vibrational spectrum of AlAs.</p>
-<p>Once we have a function returning an input for SCF calculations, it's just a matter of 
-of passing the SCF input to the <em>from_scf_input</em> factory function</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[124]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_flow_alas_phonons</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Build and return a Flow to compute the dynamical matrix on a (2, 2, 2) qmesh</span>
-<span class="sd">    as well as DDK and Born effective charges.</span>
-<span class="sd">    The final DDB with all perturbations will be merged automatically and placed</span>
-<span class="sd">    in the Flow `outdir` directory.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">abipy</span> <span class="k">import</span> <span class="n">flowtk</span>
-    <span class="n">scf_input</span> <span class="o">=</span> <span class="n">make_scf_input</span><span class="p">(</span><span class="n">ecut</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">ngkpt</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">PhononFlow</span><span class="o">.</span><span class="n">from_scf_input</span><span class="p">(</span><span class="s2">&quot;flow_alas_phonons&quot;</span><span class="p">,</span> <span class="n">scf_input</span><span class="p">,</span>
-                                            <span class="n">ph_ngqpt</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">with_becs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Abipy-will-call-Abinit-to-get-the-list-of-DFPT-perturbations-and&#8230;">Abipy will call Abinit to get the list of DFPT perturbations and&#8230;<a class="anchor-link" href="#Abipy-will-call-Abinit-to-get-the-list-of-DFPT-perturbations-and&#8230;">&#182;</a></h5>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[125]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#flow_phbands = build_flow_alas_phonons()</span>
-<span class="c1">#flow_phbands.get_graphviz()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-execute-the-flow,-use-the-abirun.py-script:">To execute the flow, use the <em>abirun.py</em> script:<a class="anchor-link" href="#To-execute-the-flow,-use-the-abirun.py-script:">&#182;</a></h4>
-<pre><code>abirun.py flow_workdir scheduler
-
-
-</code></pre>
-<p>For futher info, see 
-<a href="https://nbviewer.jupyter.org/github/abinit/abitutorials/blob/master/abitutorials/flows.ipynb">this notebook</a></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="./assets/abiflows_deps.png" width="85%" align="center"></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="DFPT-workflows-with-Abiflows,-Fireworks-and-MongoDB">DFPT workflows with Abiflows, Fireworks and MongoDB<a class="anchor-link" href="#DFPT-workflows-with-Abiflows,-Fireworks-and-MongoDB">&#182;</a></h2><ul>
-<li>Databases makes life easier if one has to handle many calculations</li>
-<li><p>Databases can be used to</p>
+<h4 id="This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">This function returns an <em>AbiFile</em> object provinding access to physical properties.<a class="anchor-link" href="#This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">&#182;</a></h4><p>Conventions:</p>
 <ul>
-<li>start calculations from previous results</li>
-<li>save the intermediate status of the jobs</li>
-<li>store the final results</li>
+<li><em>abifile.structure</em> ➝ crystalline structure (subclass of pymatgen <em>Structure</em>)</li>
+<li><em>abifile.ebands</em> ➝ electron band energies</li>
+<li><em>abifile.ebands.kpoints</em> ➝ list of k-points (k-path, IBZ) </li>
+<li><em>abifile.phbands</em> ➝ phonon frequencies and displacements</li>
 </ul>
-</li>
+<p>Several AbiPy objects provide <em>plot</em> methods returning <a href="https://matplotlib.org/"><em>matplotlib</em></a> figures</p>
+
+</div>
+</div>
+</div>
+</aside><aside class="notes">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="./assets/mongoengine_logo.png" width="50%" align="center"></p>
+<h4 id="Document-Object-Mapper">Document-Object Mapper<a class="anchor-link" href="#Document-Object-Mapper">&#182;</a></h4><ul>
+<li>Like ORM but for document databases</li>
+<li>Mixins for standard quantities</li>
+<li>Document associated with workflows</li>
+<li>Standardized output</li>
 </ul>
-<p>Building an <em>Abiflows</em> workflow for DFPT requires:</p>
+<p>abiflows.database.mongoengine modules:</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[126]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from pseudo_dojo.core.pseudos import OfficialDojoTable</span>
-<span class="c1">#from abiflows.fireworks.workflows.abinit_workflows import PhononFullFWWorkflow </span>
+</aside><aside class="notes">
 
-<span class="c1"># Pseudopotential table from the PseudoDojo package</span>
-<span class="c1">#pseudo_table = OfficialDojoTable.from_dojodir(&#39;ONCVPSP-PBEsol-PDv0.4&#39;,&#39;standard&#39;)</span>
-
-<span class="c1"># Create fireworks workflow with default settings</span>
-<span class="c1">#structure = abilab.Structure.from_file(&quot;si.cif&quot;)</span>
-<span class="c1">#wf = PhononFullFWWorkflow.from_factory(structure=structure, pseudos=pseudo_table)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-dependency-graph-is-similar-to-the-ligthweigh-version-discussed-before:">The dependency graph is similar to the ligthweigh version discussed before:<a class="anchor-link" href="#The-dependency-graph-is-similar-to-the-ligthweigh-version-discussed-before:">&#182;</a></h3><p><img src="./assets/abiflows_workflow.png" width="95%" align="center"></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="but-now-one-can-take-advantage-of-MongoDb-to-run-many-calculations-in-a-full-automatic-way:">but now one can take advantage of MongoDb to run many calculations in a full automatic way:<a class="anchor-link" href="#but-now-one-can-take-advantage-of-MongoDb-to-run-many-calculations-in-a-full-automatic-way:">&#182;</a></h5><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abiflows.fireworks.workflows.abinit_workflows</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">abiflows.database.mongoengine.utils</span> <span class="kn">import</span> <span class="n">DatabaseData</span>
-<span class="kn">from</span> <span class="nn">abiflows.database.mongoengine.abinit_results</span> <span class="kn">import</span> <span class="n">RelaxResult</span>
-<span class="kn">from</span> <span class="nn">pseudo_dojo.core.pseudos</span> <span class="kn">import</span> <span class="n">OfficialDojoTable</span>
-
-<span class="c1"># Pseudopotential Table from PseudoDojo</span>
-<span class="n">pseudo_table</span> <span class="o">=</span> <span class="n">OfficialDojoTable</span><span class="o">.</span><span class="n">from_dojodir</span><span class="p">(</span><span class="s1">&#39;ONCVPSP-PBEsol-PDv0.4&#39;</span><span class="p">,</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
-
-<span class="c1"># Database with relaxed structures</span>
-<span class="n">source_db</span> <span class="o">=</span> <span class="n">DatabaseData</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;database_address&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> 
-                         <span class="n">collection</span><span class="o">=</span><span class="s1">&#39;collection_name_used_for_relax&#39;</span><span class="p">,</span> 
-                         <span class="n">database</span><span class="o">=</span><span class="s1">&#39;database_used_to_store_relax_calc&#39;</span><span class="p">)</span>
-
-<span class="c1"># Database used to store DFPT results.</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DatabaseData</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;database_address&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="s1">&#39;phonon_bs&#39;</span><span class="p">,</span> 
-                  <span class="n">database</span><span class="o">=</span><span class="s1">&#39;database_name_eg_phonons&#39;</span><span class="p">)</span>
-
-<span class="c1"># Connect to the database</span>
-<span class="n">source_db</span><span class="o">.</span><span class="n">connect_mongoengine</span><span class="p">()</span>
-
-<span class="c1"># Download relaxed structure from the database.</span>
-<span class="k">with</span> <span class="n">source_db</span><span class="o">.</span><span class="n">switch_collection</span><span class="p">(</span><span class="n">RelaxResult</span><span class="p">)</span> <span class="k">as</span> <span class="n">RelaxResult</span><span class="p">:</span>
-    <span class="n">relaxed_structure</span> <span class="o">=</span> <span class="n">RelaxResult</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mp_id</span><span class="o">=</span><span class="s2">&quot;mp-149&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span>
-
-<span class="n">wf</span> <span class="o">=</span> <span class="n">PhononFullFWWorkflow</span><span class="o">.</span><span class="n">from_factory</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="n">pseudo_table</span><span class="p">)</span>
-
-<span class="n">wf</span><span class="o">.</span><span class="n">add_mongoengine_db_insertion</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">add_final_cleanup</span><span class="p">([</span><span class="s2">&quot;WFK&quot;</span><span class="p">,</span> <span class="s2">&quot;1WF&quot;</span><span class="p">,</span> <span class="s2">&quot;WFQ&quot;</span><span class="p">,</span> <span class="s2">&quot;1POT&quot;</span><span class="p">,</span> <span class="s2">&quot;1DEN&quot;</span><span class="p">])</span>
-<span class="n">wf</span><span class="o">.</span><span class="n">add_to_db</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">How to recostruct AbiPy objects from a MondoDb database<a class="anchor-link" href="#How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">&#182;</a></h3><hr>
-
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abiflows.database.mongoengine.abinit_results</span> <span class="kn">import</span> <span class="n">PhononResult</span>
+<h3 id="How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">How to recostruct AbiPy objects from a MondoDb database<a class="anchor-link" href="#How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">&#182;</a></h3><p></p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abiflows.database.mongoengine.abinit_results</span> <span class="kn">import</span> <span class="n">PhononResult</span>
 
 <span class="c1"># Find results for SiC</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">PhononResult</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mp_id</span><span class="o">=</span><span class="s1">&#39;mp-8062&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
 
 <span class="c1"># Get DDB object from the database.</span>
-<span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">abinit_output</span><span class="o">.</span><span class="n">ddb</span><span class="o">.</span><span class="n">abiopen</span><span class="p">()</span> <span class="k">as</span> <span class="n">ddb</span><span class="p">:</span> 
+<span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">abinit_output</span><span class="o">.</span><span class="n">gs_gsr</span><span class="o">.</span><span class="n">abiopen</span><span class="p">()</span> <span class="k">as</span> <span class="n">gsr</span><span class="p">:</span>
+    <span class="n">gsr</span><span class="o">.</span><span class="n">ebands</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
+<span class="c1"># Get DDB object from the database.</span>
+<span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">abinit_output</span><span class="o">.</span><span class="n">ddb</span><span class="o">.</span><span class="n">abiopen</span><span class="p">()</span> <span class="k">as</span> <span class="n">ddb</span><span class="p">:</span> 
     <span class="c1"># Run anaddb </span>
     <span class="n">phbst</span><span class="p">,</span> <span class="n">phdos</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">ngqpt</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span> 
-
     <span class="c1"># Use AbiPy API</span>
     <span class="n">phbst</span><span class="o">.</span><span class="n">phbands</span><span class="o">.</span><span class="n">plot_with_phdos</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">phdos</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm-1&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
+</div>
+</aside></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><img src="./assets/technical_problems.jpg" width="55%" align="center"></center>
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Using-AbiPy-to-implement-unit-tests-with-extra-logic">Using AbiPy to implement unit tests with extra logic<a class="anchor-link" href="#Using-AbiPy-to-implement-unit-tests-with-extra-logic">&#182;</a></h4><ul>
+<li>More that 1200 tests in <em>TestSuite</em> still the infrastructure <u>is not bulletproof</u></li>
+<li>We assume the reference files are <em>always</em> correct but mistakes happen and there are errors that can be easily spotted by analyzing the raw data</li>
+</ul>
+<h4 id="Based-on-a-true-story:">Based on a true story:<a class="anchor-link" href="#Based-on-a-true-story:">&#182;</a></h4><ul>
+<li>a bug in the calculation of the ph-DOS entered trunk/develop</li>
+<li>refs were updated so buildbot was happy!</li>
+<li>fortunately, AbiPy detected the problem because there was a test based </li>
+<li>on the post-processing of the numerical results</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1"># Test whether projected DOSes computed by anaddb integrate to 3*natom.</span>
+<span class="n">ddb</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="s2">&quot;out_DDB&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">dos_method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;tetra&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="c1"># Get phonon bands and dos with anaddb.</span>
+    <span class="n">phbands_file</span><span class="p">,</span> <span class="n">phdos_file</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">dos_method</span><span class="o">=</span><span class="n">dos_method</span><span class="p">)</span>
+
+    <span class="n">phbands</span><span class="p">,</span> <span class="n">phdos</span> <span class="o">=</span> <span class="n">phbands_file</span><span class="o">.</span><span class="n">phbands</span><span class="p">,</span> <span class="n">phdos_file</span><span class="o">.</span><span class="n">phdos</span>
+    <span class="n">natom3</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phbands</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+
+    <span class="c1"># Total PHDOS should integrate to 3 * natom</span>
+    <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="n">natom3</span><span class="p">)</span>
+
+    <span class="c1"># Summing projected DOSes over types should give the total DOS.</span>
+    <span class="n">pj_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pjdos</span><span class="o">.</span><span class="n">integral_value</span> <span class="k">for</span> <span class="n">pjdos</span> <span class="ow">in</span> <span class="n">phdos_file</span><span class="o">.</span><span class="n">pjdos_symbol</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="n">pj_sum</span><span class="p">)</span>
+
+    <span class="c1"># Summing proj-DOSes over types and directions should give the total DOS.</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">phdos_file</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_value</span><span class="p">(</span><span class="s2">&quot;pjdos_rc_type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">tot_dos</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">Function1D</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+    <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="n">tot_dos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>The idea is not new: FFTW3 built-in tests use this kind of internal consistency check</li>
+<li>Implementing this kind of tests in Fortran is a real pain (I did it for the FFT machinery in <em>fftprof</em>)</li>
+<li>python and the AbiPy API represent a very flexible approach to implement this kind of agnostic tests</li>
+<li>Want to run the test in parallel with MPI? Just add:<p></p></li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">mpi_procs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">23</span><span class="p">):</span>
+    <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">dos_method</span><span class="o">=</span><span class="n">dos_method</span><span class="p">,</span> <span class="n">mpi_procs</span><span class="o">=</span><span class="n">mpi_procs</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
 </div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Clean-exit-with---timeline-and-smart-io-mode">Clean exit with <em>--timeline</em> and smart-io mode<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode">&#182;</a></h2><p></p><div class="highlight"><pre><span></span>$ cat job.sh
+
+<span class="c1">#!/bin/bash</span>
+<span class="c1">#SBATCH --ntasks=48</span>
+<span class="c1">#SBATCH --time=12:00:00</span>
+
+abinit --timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
+</pre></div>
+<ul>
+<li>Available for iterative algorithms (Relax, Scf, Nscf?)</li>
+<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching</li>
+<li>Abipy will restart the job from the previous results</li>
+<li>timelimit and prtwf -1 to reduce IO-pressure and avoid disk-quota hell </li>
+</ul>
+<p>Discuss IO pressure, too many files</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="TestSuite-is-too-gentle-whereas-the-world-is-dark-and-full-of-errors--&#128009;&#128009;&#128009;">TestSuite is too gentle whereas the world is dark and full of errors  &#128009;&#128009;&#128009;<a class="anchor-link" href="#TestSuite-is-too-gentle-whereas-the-world-is-dark-and-full-of-errors--&#128009;&#128009;&#128009;">&#182;</a></h3><blockquote><p>Stress testing involves testing beyond normal operational capacity, 
+  often to a breaking point, in order to observe the results (<em>wikipedia</em>)</p>
+</blockquote>
+<p>Reasons can include:</p>
+<ul>
+<li>to determine breaking points or safe usage limits</li>
+<li>to confirm intended specifications are being met</li>
+<li>to determine modes of failure (how exactly a system fails)</li>
+</ul>
+<p>Example: <em>ionmov 22</em>, see Guido's talk</p>
+<ul>
+<li>AbiPy uses integration tests to check <em>ErrorHandlers</em>. The code is supposed to 
+<strong>fail several times</strong> before giving the right answer. </li>
+<li>Is it possible to implement this pattern in <em>TestSuite</em>?</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Using-AbiPy-to-benchmark-ABINIT">Using AbiPy to benchmark ABINIT<a class="anchor-link" href="#Using-AbiPy-to-benchmark-ABINIT">&#182;</a></h4><ul>
+<li>The programmatic API allows one to write benchmarks in a few lines of code</li>
+<li>Want to analyze the strong scaling efficiency of the GS solver with different configurations 
+of MPI/OMP and input variables?</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1"># Titanium with 256 atoms and k-point sampling.</span>
+<span class="c1"># GS calculations with paral_kgb == 1 and different values of wfoptalg.</span>
+
+<span class="c1"># List of MPI distribution.</span>
+<span class="n">pconfs</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">8</span> <span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">8</span> <span class="p">),</span>  <span class="c1"># 128</span>
+     <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">8</span> <span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>  <span class="c1"># 256</span>
+     <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>  <span class="c1"># 512</span>
+     <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">32</span><span class="p">),</span>  <span class="c1"># 1024</span>
+<span class="p">]</span>
+
+<span class="n">omp_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># List of OpenMP threads</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">BenchmarkFlow</span><span class="p">()</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">make_input</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">wfoptalg</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="n">work</span> <span class="o">=</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">Work</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">omp_threads</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">pconfs</span><span class="p">,</span> <span class="n">omp_list</span><span class="p">):</span>
+        <span class="n">mpi_procs</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">new_with_fixed_mpi_omp</span><span class="p">(</span><span class="n">mpi_procs</span><span class="p">,</span> <span class="n">omp_threads</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">new_with_vars</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">wfoptalg</span><span class="o">=</span><span class="n">wfoptalg</span><span class="p">)</span>
+        <span class="n">work</span><span class="o">.</span><span class="n">register_scf_task</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">manager</span><span class="o">=</span><span class="n">manager</span><span class="p">)</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">register_work</span><span class="p">(</span><span class="n">work</span><span class="p">)</span>
+
+<span class="n">flow</span><span class="o">.</span><span class="n">allocate</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div><aside class="notes">
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For years, I was not able to use strings in datasets because of the infamous bindings!</p>
+<p>getwfk_path</p>
+
+</div>
+</div>
+</div>
+</aside></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
