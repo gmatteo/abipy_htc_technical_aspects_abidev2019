@@ -13362,7 +13362,7 @@ discuss possible approaches to address these issues.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">AbinitInput</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;si.psp8&quot;</span><span class="p">)</span>
@@ -13382,7 +13382,7 @@ discuss possible approaches to address these issues.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ecut&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
@@ -13399,7 +13399,7 @@ discuss possible approaches to address these issues.
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[3]:</div>
+    <div class="prompt output_prompt">Out[16]:</div>
 
 
 
@@ -13423,7 +13423,7 @@ discuss possible approaches to address these issues.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">kptopt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ngkpt</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>  
@@ -13445,7 +13445,7 @@ discuss possible approaches to address these issues.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_autokmesh</span><span class="p">(</span><span class="n">nksmall</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -13461,7 +13461,7 @@ discuss possible approaches to address these issues.
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[5]:</div>
+    <div class="prompt output_prompt">Out[18]:</div>
 
 
 
@@ -13610,7 +13610,7 @@ providing all the information required to execute/submit Abinit jobs:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ibz</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">abiget_ibz</span><span class="p">()</span>
@@ -13671,7 +13671,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;paral_kgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -13739,7 +13739,7 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_phperts</span><span class="p">(</span><span class="n">qpt</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -13755,7 +13755,7 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt output_prompt">Out[23]:</div>
 
 
 
@@ -13780,7 +13780,7 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_strainperts</span><span class="p">()</span>
@@ -13796,7 +13796,7 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[11]:</div>
+    <div class="prompt output_prompt">Out[24]:</div>
 
 
 
@@ -13822,7 +13822,7 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>DFPT perturbations are independent hence jobs can be executed in parallel</li>
-<li>Handling errors in calculations with datasets is not trivial --&gt; Divide and conquer approach</li>
+<li>Handling errors in calculations with datasets is not trivial ➔ Divide and conquer approach</li>
 <li>These methods represent the <strong>building block</strong> to generate workflows at runtime.<!-- div class="alert alert-info"> </div --></li>
 </ul>
 
@@ -13832,8 +13832,8 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<center><img src="./assets/how_does_it_work.jpg" width="35%" align="center"></center><ul>
-<li>ABINIT and AbiPy communicate through Yaml docs in log and netcdf files</li>
+<center><img src="./assets/how_does_it_work.jpg" width="45%" align="center"></center><ul>
+<li>ABINIT and AbiPy communicate through Yaml docs in <em>log</em> and <em>netcdf</em> files</li>
 <li>AbiPy uses this protocol to:<ul>
 <li>generate input files</li>
 <li>handle errors</li>
@@ -13866,13 +13866,11 @@ specified by the user <em>e.g.</em> exclusive node allocation</li>
 </li>
 <li><p><strong>Netcdf4</strong></p>
 <ul>
-<li>Portable binary format. Can handle big-data and <u>metadata</u> efficiently</li>
-<li>Support for parallel MPI-IO (HDF5)</li>
+<li>Portable binary format. Can handle big-data and <u>metadata</u> efficiently with MPI-IO</li>
 <li><a href="https://www.etsf.eu/fileformats">ETSF-IO specifications</a> for crystalline structures, wavefunctions, densities…</li>
 <li>Still, ETSF-IO specs are not enough as we need <em>hdr_t</em> to restart. Besides many physical properties 
 are not covered by the standard</li>
 <li>A machine-readable format is also human-readable. Just put some python code around it!</li>
-<li>All technologies have pros and cons and <em>netcdf</em> is no exception: <em>netcdf</em> is array-oriented </li>
 </ul>
 </li>
 </ul>
@@ -13912,7 +13910,7 @@ although we usually prefer a more robust approach...</li>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Specialized-error-classes">Specialized error classes<a class="anchor-link" href="#Specialized-error-classes">&#182;</a></h2><ul>
-<li>Runtime errors that appear with a certain frequency are associated to specialized error classes:  <p></p></li>
+<li>Runtime errors appearing with a certain frequency are associated to specialized error classes:  <p></p></li>
 </ul>
 <div class="highlight"><pre><span></span><span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
 </pre></div>
@@ -13993,13 +13991,13 @@ although we usually prefer a more robust approach...</li>
 <li>Client code uses these methods to implement <em>composition</em></li>
 <li>A <em>GSR.nc</em> file, for instance, has a <em>crystal</em>, an <em>header</em>, <em>ebands</em> and <em>results_gs</em></li>
 </ul>
-<h4 id="Fortran-code-for-GSR.nc">Fortran code for GSR.nc<a class="anchor-link" href="#Fortran-code-for-GSR.nc">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">ncerr</span> <span class="o">=</span> <span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<h4 id="Fortran-code-for-GSR.nc">Fortran code for GSR.nc<a class="anchor-link" href="#Fortran-code-for-GSR.nc">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">ncerr</span> <span class="o">=</span> <span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">)</span>
 <span class="c">! Write hdr, crystal and band structure</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">fform_den</span><span class="p">,</span> <span class="n">nc_define</span><span class="o">=</span><span class="p">.</span><span class="n">True</span><span class="p">.)</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">ebands</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
 <span class="c">! Add energy, forces, stresses</span>
-<span class="n">ncerr</span> <span class="o">=</span> <span class="n">results_gs</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">ecut</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">pawecutdg</span><span class="p">))</span>
+<span class="n">ncerr</span> <span class="o">=</span> <span class="n">results_gs</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">ecut</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">pawecutdg</span><span class="p">)</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">nf90_close</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
 </pre></div>
 <h4 id="The-same-pattern-can-be-used-for-other-files:">The same pattern can be used for other files:<a class="anchor-link" href="#The-same-pattern-can-be-used-for-other-files:">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;out_PHDOS.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
@@ -14037,10 +14035,12 @@ although we usually prefer a more robust approach...</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<center><img src="./assets/technical_problems.jpg" width="85%" align="center"></center><ul>
+<p><center><img src="./assets/technical_problems.jpg" width="85%" align="center"></center>
+<br><hr></p>
+<ul>
 <li>Restart capabilities and IO</li>
-<li>Extending TesSuite with AbiPy</li>
-<li>TestSuite is too gentle but clusters are dark and full of errors 🐉🐉🐉</li>
+<li>Extending <em>TesSuite</em> with AbiPy</li>
+<li><em>TestSuite</em> is too gentle but clusters are dark and full of errors 🐉🐉🐉</li>
 <li>Using AbiPy to benchmark ABINIT</li>
 </ul>
 
@@ -14050,26 +14050,25 @@ although we usually prefer a more robust approach...</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Restart-capabilities-and-IO">Restart capabilities and IO<a class="anchor-link" href="#Restart-capabilities-and-IO">&#182;</a></h2><h4 id="Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">Clean exit with <em>--timeline</em> and smart-io mode (prtwf -1)<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">&#182;</a></h4><p><p></p></p>
-<div class="highlight"><pre><span></span>$ cat job.sh
-<span class="c1">#SBATCH --time=12:00:00</span>
+<h2 id="Restart-capabilities-and-IO">Restart capabilities and IO<a class="anchor-link" href="#Restart-capabilities-and-IO">&#182;</a></h2><h4 id="Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">Clean exit with <em>--timeline</em> and smart-io mode (prtwf -1)<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">&#182;</a></h4><p></p><div class="highlight"><pre><span></span>$ cat job.sh
 
-abinit --timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
+    <span class="c1">#SBATCH --time=12:00:00</span>
+    abinit --timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
 </pre></div>
 <ul>
-<li>Available for iterative algorithms (Relax, Scf)</li>
-<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching so that restart   is possible</li>
+<li>Available for iterative algorithms (<em>Relax</em>, <em>Scf</em>)</li>
+<li>Compute wall-time required by one iteration, save intermediate results if <em>timelimit</em> 
+is approaching so that restart is possible</li>
 <li><em>prtwf</em> -1: Print WFK only if <em>not converged</em> to reduce IO-pressure and avoid disk-quota</li>
 <li>Abipy will restart the job from the previous results </li>
 </ul>
-<h4 id="Restart-from-netcdf-file">Restart from netcdf file<a class="anchor-link" href="#Restart-from-netcdf-file">&#182;</a></h4><ul>
-<li>EPH approach: Save results to SIGPEH with table <em>done(ikpt, spin)</em></li>
+<h4 id="Restart-from-netcdf-file">Restart from <em>netcdf</em> file<a class="anchor-link" href="#Restart-from-netcdf-file">&#182;</a></h4><ul>
+<li>EPH approach: Save results to SIGEPH with table <em>done(ikpt, spin)</em></li>
 </ul>
 <h4 id="Unfortunately:">Unfortunately:<a class="anchor-link" href="#Unfortunately:">&#182;</a></h4><ul>
 <li>Not all the drivers support restart e.g. GW or BSE</li>
 <li>Output of certain files may use smart-io mode by default <em>e.g.</em> first-order WFK</li>
-<li>The number of file descriptors <em>per user</em> is limited. Should make list of files that 
-may be removed e.g. _OUT.nc </li>
+<li>The number of files <em>per user</em> is limited. Should make list of files that may be removed e.g. <em>_OUT.nc</em> </li>
 </ul>
 
 </div>
@@ -14134,14 +14133,13 @@ on the post-processing of the numerical results...</li>
 often to a breaking point in order to:</p>
 <ul>
 <li>determine breaking points or safe usage limits</li>
-<li>confirm intended specifications are being met</li>
 <li><p>determine how exactly a system fails</p>
 <p>(<em>wikipedia</em>)</p>
 </li>
 </ul>
 </blockquote>
 <h4 id="Questions:">Questions:<a class="anchor-link" href="#Questions:">&#182;</a></h4><ul>
-<li>How many tests do we usually perform before saying that one algorithm is clearly superior to another one?</li>
+<li>How many tests do we perform before saying that one algo is clearly superior to another one?</li>
 <li>Do we have a suite of input systems designed to reveal weaknesses in algorithms?</li>
 <li>Is it possible to handle some of these errors at the Fortran level?</li>
 </ul>
@@ -14206,7 +14204,7 @@ of MPI/OMP and input variables?</li>
 <li>This talk has no conclusions because we have not yet found optimal solutions to the problems 
 mentioned in the previous slides except one:</li>
 </ul>
-<h2 id="Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">Different Problems Require Different Solutions Based On Different Technologies<a class="anchor-link" href="#Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">&#182;</a></h2>
+<h4 id="Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">Different Problems Require Different Solutions Based On Different Technologies<a class="anchor-link" href="#Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">&#182;</a></h4>
 </div>
 </div>
 </div></section></section>
