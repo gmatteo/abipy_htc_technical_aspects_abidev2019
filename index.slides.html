@@ -13254,9 +13254,8 @@ a.anchor-link {
 <p><img src="./assets/intro_logos.png" width="85%" heigh="15%" align="center"></p>
 <h2 id="Overview:">Overview:<a class="anchor-link" href="#Overview:">&#182;</a></h2><ul>
 <li>Approach used to connect AbiPy with Abinit</li>
-<li>Advantages and drawbacks for Yaml and netcdf</li>
-<li>How to perform benchmarks and stress tests in python</li>
-<li>Technical problems related to automatic calculations</li>
+<li>Advantages and drawbacks of Yaml and <em>netcdf</em></li>
+<li>Technical problems related to automatic calculations and possible solutions</li>
 </ul>
 <!--
 <hr> 
@@ -13292,14 +13291,13 @@ discuss possible approaches to address these issues.
 <li>Managing complicated workflows</li>
 <li>Exposing task parallelism (independent steps can be executed in parallel)</li>
 <li>Handling runtime errors and restarting calculations</li>
-<li>Saving final results in machine-readable format (e.g. databases)</li>
+<li>Saving final results in machine-readable format (e.g. databases)
+<p></p><hr></li>
 </ul>
 </li>
 </ul>
-<hr>
-
 <center>
-<img src="./assets/sdata201865-f2.jpg" width="60%" align="center">
+<img src="./assets/sdata201865-f2.jpg" width="65%" align="center">
 </center>
 </div>
 </div>
@@ -13307,44 +13305,21 @@ discuss possible approaches to address these issues.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="AbiPy-design-principles">AbiPy design principles<a class="anchor-link" href="#AbiPy-design-principles">&#182;</a></h2><ul>
-<li>Extend the pymatgen code-base with ABINIT-specific objects</li>
-<li><p>Layered structure designed for different use-cases:</p>
-<ul>
-<li>Post-processing tools and command-line interfaces</li>
-<li>API to automate calculations and data analysis</li>
-<li>High-throughput infrastructure (<a href="https://github.com/abinit/abiflows">abiflows</a>, <a href="https://github.com/materialsproject/fireworks">fireworks</a>, <a href="https://www.mongodb.com/">mongodb</a>)</li>
-</ul>
-</li>
-<li><p>Closely connected to the ABINIT executable:</p>
-<ul>
-<li>CPU-intensive algorithms performed by ABINIT (Fortran + MPI + OpenMP)</li>
-<li>Glue code implemented in python</li>
-</ul>
-</li>
-</ul>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Workflow-infrastructure">Workflow infrastructure<a class="anchor-link" href="#Workflow-infrastructure">&#182;</a></h2><p>Two different approaches:</p>
-<h4 id="AbiPy-workflows:">AbiPy workflows:<a class="anchor-link" href="#AbiPy-workflows:">&#182;</a></h4><ul>
+<h4 id="AbiPy-workflows-(flowtk):">AbiPy workflows (<em>flowtk</em>):<a class="anchor-link" href="#AbiPy-workflows-(flowtk):">&#182;</a></h4><ul>
 <li>Lightweight implementation (<em>pymatgen</em> + <em>AbiPy</em>)</li>
 <li>No database required. Object persistence provided by <a href="https://docs.python.org/3/library/pickle.html"><em>pickle</em></a></li>
-<li>Ideal tool for prototyping, testing and debugging the code </li>
+<li>Ideal tool for prototyping, testing, debugging.</li>
 </ul>
 <h4 id="AbiFlows-workflows:">AbiFlows workflows:<a class="anchor-link" href="#AbiFlows-workflows:">&#182;</a></h4><ul>
-<li>Requires <a href="https://www.mongodb.com/">MongoDb</a> database</li>
 <li>Based on <a href="https://materialsproject.github.io/fireworks/">fireworks</a></li>
-<li>Designed and optimized for <u>high-throughput applications</u></li>
+<li>Requires <a href="https://www.mongodb.com/">MongoDb</a> database</li>
+<li>Designed and optimized for <u>high-throughput applications</u> (Guido's talk)</li>
 </ul>
 <hr>
 
-<p>Both approaches share the same codebase (<em>AbinitInput</em>, factory functions, AbiPy objects).</p>
-<p>Number and type of calculations are important ➝ choose the approach that suits to your needs.</p>
+<p>Both approaches share the same codebase (<em>AbinitInput</em>, factory functions, AbiPy objects, TaskManager...).</p>
+<p>Number and type of calculations are important ➝ choose according to your needs.</p>
 
 </div>
 </div>
@@ -13357,7 +13332,8 @@ discuss possible approaches to address these issues.
 <li>Support for different resource managers (<em>Slurm</em>, <em>PBS</em>, <em>Torque</em>, <em>SGE</em>, <em>LoadLever</em>, <em>shell</em>)</li>
 <li><em>autoparal</em>: the number of MPI processes is optimized at runtime</li>
 <li>Iterative algorithms are automatically restarted by the framework</li>
-<li>Error handlers for common runtime failures</li>
+<li>Error handlers for common runtime failures
+<hr><p></p></li>
 </ul>
 <center>
 <img src="./assets/not_converged_task_2.png" width="40%" align="center">
@@ -13377,7 +13353,7 @@ discuss possible approaches to address these issues.
 <p>Can invoke ABINIT to get important parameters such as:</p>
 <ul>
 <li>list of <strong>k</strong>-points in the IBZ</li>
-<li>list of irreducible DFPT perturbations</li>
+<li>list of irreducible perturbations for DFPT</li>
 <li>list of possible configurations for MPI jobs (<em>npkpt</em>, <em>npfft</em>, <em>npband</em> …)</li>
 </ul>
 <h4 id="To-build-an-input,-we-need-a-structure-and-a-list-of-pseudos:">To build an input, we need a <em>structure</em> and a list of <em>pseudos</em>:<a class="anchor-link" href="#To-build-an-input,-we-need-a-structure-and-a-list-of-pseudos:">&#182;</a></h4>
@@ -13389,7 +13365,7 @@ discuss possible approaches to address these issues.
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">AbinitInput</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;14si.pspnc&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">AbinitInput</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s2">&quot;si.cif&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="o">=</span><span class="s2">&quot;si.psp8&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13518,324 +13494,14 @@ discuss possible approaches to address these issues.
 </div>
 </div>
 </div>
-</aside></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="An-AbinitInput-has-a-structure-object">An <em>AbinitInput</em> has a structure object<a class="anchor-link" href="#An-AbinitInput-has-a-structure-object">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Full Formula (Si2)
-Reduced Formula: Si
-abc   :   3.866975   3.866975   3.866975
-angles:  60.000000  60.000000  60.000000
-Sites (2)
-  #  SP       a     b     c
----  ----  ----  ----  ----
-  0  Si    0     0     0
-  1  Si    0.25  0.25  0.25
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="and-a-list-of-pseudopotentials">and a list of pseudopotentials<a class="anchor-link" href="#and-a-list-of-pseudopotentials">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;NcAbinitPseudo: 14si.pspnc&gt;
-  summary: Troullier-Martins psp for element  Si        Thu Oct 27 17:31:21 EDT 1994
-  number of valence electrons: 4.0
-  maximum angular momentum: d
-  angular momentum for local part: d
-  XC correlation: LDA_XC_TETER93
-  supports spin-orbit: False
-  radius for non-linear core correction: 1.80626423934776
-  hint for low accuracy: ecut: 0.0, pawecutdg: 0.0
-  hint for normal accuracy: ecut: 0.0, pawecutdg: 0.0
-  hint for high accuracy: ecut: 0.0, pawecutdg: 0.0
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">Inside the notebook, one gets the HTML representation with links to the documentation:<a class="anchor-link" href="#Inside-the-notebook,-one-gets-the-HTML-representation-with-links-to-the-documentation:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[8]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-############################################################################################<br>#                                       SECTION: basic                                      <br>############################################################################################<br> <a href="https://docs.abinit.org/variables/basic#ecut" target="_blank">ecut</a> 8<br> <a href="https://docs.abinit.org/variables/basic#kptopt" target="_blank">kptopt</a> 1<br> <a href="https://docs.abinit.org/variables/basic#ngkpt" target="_blank">ngkpt</a> 2 2 2<br> <a href="https://docs.abinit.org/variables/basic#shiftk" target="_blank">shiftk</a><br>    0.5    0.5    0.5<br>    0.5    0.0    0.0<br>    0.0    0.5    0.0<br>    0.0    0.0    0.5<br> <a href="https://docs.abinit.org/variables/basic#nshiftk" target="_blank">nshiftk</a> 4<br>############################################################################################<br>#                                         STRUCTURE                                         <br>############################################################################################<br> <a href="https://docs.abinit.org/variables/basic#natom" target="_blank">natom</a> 2<br> <a href="https://docs.abinit.org/variables/basic#ntypat" target="_blank">ntypat</a> 1<br> <a href="https://docs.abinit.org/variables/basic#typat" target="_blank">typat</a> 1 1<br> <a href="https://docs.abinit.org/variables/basic#znucl" target="_blank">znucl</a> 14<br> <a href="https://docs.abinit.org/variables/basic#xred" target="_blank">xred</a><br>    0.0000000000    0.0000000000    0.0000000000<br>    0.2500000000    0.2500000000    0.2500000000<br> <a href="https://docs.abinit.org/variables/basic#acell" target="_blank">acell</a>    1.0    1.0    1.0<br> <a href="https://docs.abinit.org/variables/basic#rprim" target="_blank">rprim</a><br>    6.3285005272    0.0000000000    3.6537614829<br>    2.1095001757    5.9665675167    3.6537614829<br>    0.0000000000    0.0000000000    7.3075229659
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="To-generate-a-high-symmetry-k-path-(taken-from-an-internal-database)">To generate a high-symmetry k-path (taken from an internal database)<a class="anchor-link" href="#To-generate-a-high-symmetry-k-path-(taken-from-an-internal-database)">&#182;</a></h4>
-</div>
-</div>
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">set_kpath</span><span class="p">(</span><span class="n">ndivsm</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[9]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;kptbounds&#39;: array([[0.   , 0.   , 0.   ],
-        [0.5  , 0.   , 0.5  ],
-        [0.5  , 0.25 , 0.75 ],
-        [0.375, 0.375, 0.75 ],
-        [0.   , 0.   , 0.   ],
-        [0.5  , 0.5  , 0.5  ],
-        [0.625, 0.25 , 0.625],
-        [0.5  , 0.25 , 0.75 ],
-        [0.5  , 0.5  , 0.5  ],
-        [0.375, 0.375, 0.75 ],
-        [0.625, 0.25 , 0.625],
-        [0.5  , 0.   , 0.5  ]]), &#39;kptopt&#39;: -11, &#39;ndivsm&#39;: 10, &#39;iscf&#39;: -2}</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>Ten points to sample the smallest segment of the <strong>k</strong>-path</li>
-<li>Other segments are sampled so that proportions are preserved</li>
-</ul>
-
-</div>
-</div>
-</div>
-</aside></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="If-you-mistype-the-name-of-the-variable,-AbinitInput-raises-an-error:">If you mistype the name of the variable, AbinitInput raises an error:<a class="anchor-link" href="#If-you-mistype-the-name-of-the-variable,-AbinitInput-raises-an-error:">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">inp</span><span class="o">.</span><span class="n">set_vars</span><span class="p">(</span><span class="n">perl</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-Cannot find variable `perl` in internal database.
-If you think this is not a typo, use:
-
-    input.set_spell_check(False)
-
-to disable spell checking. Perhaps the internal database is not in synch
-with the Abinit version you are using. Please contact the AbiPy developers.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="because-AbiPy-uses-the-internal-database-of-input-variables-(see-abimkdcocs-talk)">because AbiPy uses the internal database of input variables (see abimkdcocs talk)<a class="anchor-link" href="#because-AbiPy-uses-the-internal-database-of-input-variables-(see-abimkdcocs-talk)">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abilab</span><span class="o">.</span><span class="n">docvar</span><span class="p">(</span><span class="s2">&quot;ecut&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[11]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<h2>Default value:</h2>
-<p>None</p>
-<h2>Description:</h2>
-<p>Used for kinetic energy cutoff which controls number of planewaves at given k point by:
-(1/2)[(2 Pi)*(k+Gmax)]  2  =<b>ecut</b> for Gmax.</p>
-<p>All planewaves inside this "basis sphere" centered at k are included in the basis (except if <b>dilatmx</b> is defined).
-Can be specified in Ha (the default), Ry, eV or Kelvin, since <b>ecut</b> has the
-'<b>ENERGY</b>' characteristics. (1 Ha=27.2113845 eV)
-This is the single parameter which can have an enormous effect on the quality
-of a calculation; basically the larger <b>ecut</b> is, the better converged the
-calculation is. For fixed geometry, the total energy MUST always decrease as
-<b>ecut</b> is raised because of the variational nature of the problem.</p>
-<p><em>Usually one runs at least several calculations at various <b>ecut</b> to
-investigate the convergence needed for reliable results.</em></p>
-<p>For k-points whose coordinates are build from 0 or 1/2, the implementation of
-time-reversal symmetry that links coefficients of the wavefunctions in
-reciprocal space has been realized. See the input variable <b>istwfk</b>. If
-activated (which corresponds to the Default mode), this input variable
-<b>istwfk</b> will allow to divide the number of plane wave (npw) treated
-explicitly by a factor of two. Still, the final result should be identical
-with the 'full' set of plane waves.</p>
-<p>See the input variable <b>ecutsm</b>, for the smoothing of the kinetic energy,
-needed to optimize unit cell parameters.</p>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section></section><section><section>
+</aside></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Interfacing-Abinit-with-Python-via-AbinitInput">Interfacing Abinit with Python via <em>AbinitInput</em><a class="anchor-link" href="#Interfacing-Abinit-with-Python-via-AbinitInput">&#182;</a></h2><ul>
 <li><p>Once we have an <em>AbinitInput</em>, it is possible to execute Abinit to:</p>
 <ul>
-<li>get useful information from the Fortran code (e.g. IBZ, space group…)</li>
+<li>get useful data from the Fortran code (e.g. IBZ, space group…)</li>
 <li>validate the input file before running the calculation </li>
 </ul>
 </li>
@@ -13851,14 +13517,86 @@ needed to optimize unit cell parameters.</p>
 providing all the information required to execute/submit Abinit jobs:</p>
 <ul>
 <li><code>$PATH</code>, <code>$LD_LIBRARY_PATH</code></li>
-<li>modules</li>
-<li>python environment</li>
+<li>modules (if any)</li>
 </ul>
 </li>
+<li><p>For futher info consult the <a href="https://abinit.github.io/abipy/workflows/taskmanager.html">documentation</a></p>
+</li>
 </ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example-of-manager.yml-for-laptops-(shell-adapter)">Example of <em>manager.yml</em> for laptops (shell adapter)<a class="anchor-link" href="#Example-of-manager.yml-for-laptops-(shell-adapter)">&#182;</a></h2><hr>
+
+<div class="highlight"><pre><span></span><span class="nt">qadapters</span><span class="p">:</span>
+  <span class="c1"># List of qadapters objects </span>
+  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> 
+    <span class="nt">queue</span><span class="p">:</span>
+      <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shell</span>
+      <span class="nt">qname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+    <span class="nt">job</span><span class="p">:</span>
+       <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
+       <span class="nt">pre_run</span><span class="p">:</span> 
+           <span class="c1"># abinit exec must be in $PATH</span>
+           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">export PATH=$HOME/git_repos/abinit/_build/src/98_main:$PATH</span>
+    <span class="nt">limits</span><span class="p">:</span>
+       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30:00</span>
+       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="nt">hardware</span><span class="p">:</span>
+       <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+       <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+       <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+       <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4Gb</span>
+</pre></div>
 <ul>
-<li>For futher info consult the <a href="https://abinit.github.io/abipy/workflows/taskmanager.html">documentation</a></li>
+<li><p>Examples of configuration files for clusters available <a href="https://abinit.github.io/abipy/workflows/manager_examples.html">here</a></p>
+</li>
+<li><p>Use <em>abirun.py doc_manager</em> to get documentation inside the shell</p>
+</li>
 </ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="An-example-for-a-Slurm-based-cluster">An example for a Slurm-based cluster<a class="anchor-link" href="#An-example-for-a-Slurm-based-cluster">&#182;</a></h2><hr>
+
+<div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span> <span class="nl">&amp;hardware</span>
+   <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+   <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+   <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+   <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">95Gb</span>
+
+<span class="nt">job</span><span class="p">:</span> <span class="nl">&amp;job</span>
+    <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
+    <span class="nt">modules</span><span class="p">:</span> <span class="c1"># Load modules used to compile Abinit </span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">intel/2017b</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">netCDF-Fortran/4.4.4-intel-2017b</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">abinit_8.11</span>
+    <span class="nt">pre_run</span><span class="p">:</span> <span class="s">&quot;ulimit</span><span class="nv"> </span><span class="s">-s</span><span class="nv"> </span><span class="s">unlimited&quot;</span>
+
+<span class="c1"># Slurm options.</span>
+<span class="nt">qadapters</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">queue</span><span class="p">:</span>
+       <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">slurm</span>
+       <span class="nt">qname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">large</span>
+    <span class="nt">limits</span><span class="p">:</span>
+       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0-0:30:00</span>
+       <span class="nt">min_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+       <span class="nt">min_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+       <span class="nt">max_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
+       <span class="nt">max_num_launches</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">hardware</span><span class="p">:</span> <span class="nv">*hardware</span>
+    <span class="nt">job</span><span class="p">:</span> <span class="nv">*job</span>
+</pre></div>
 
 </div>
 </div>
@@ -13872,13 +13610,14 @@ providing all the information required to execute/submit Abinit jobs:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ibz</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">abiget_ibz</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of k-points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Weights normalized to:&quot;</span><span class="p">,</span> <span class="n">ibz</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
 <span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ibz</span><span class="o">.</span><span class="n">points</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="n">ibz</span><span class="o">.</span><span class="n">weights</span><span class="p">[:</span><span class="n">n</span><span class="p">])):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;kpt:&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;weight:&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
@@ -13899,14 +13638,10 @@ providing all the information required to execute/submit Abinit jobs:</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Number of k-points: 198
-Weights normalized to: 198.0
-0 kpt: [0. 0. 0.] weight: 1.0
-1 kpt: [0.01785714 0.         0.01785714] weight: 1.0
-2 kpt: [0.03571429 0.         0.03571429] weight: 1.0
-3 kpt: [0.05357143 0.         0.05357143] weight: 1.0
-4 kpt: [0.07142857 0.         0.07142857] weight: 1.0
-...
+<pre>Number of k-points: 2
+Weights normalized to: 1.0
+0 kpt: [-0.25  0.5   0.  ] weight: 0.75
+1 kpt: [-0.25  0.    0.  ] weight: 0.25
 </pre>
 </div>
 </div>
@@ -13936,7 +13671,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;paral_kgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -13960,16 +13695,16 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Best efficiency:
- {&#39;efficiency&#39;: 0.8465,
+ {&#39;efficiency&#39;: 0.788,
  &#39;mem_per_cpu&#39;: 0.0,
- &#39;mpi_ncpus&#39;: 5,
+ &#39;mpi_ncpus&#39;: 2,
  &#39;omp_ncpus&#39;: 1,
- &#39;tot_ncpus&#39;: 5,
+ &#39;tot_ncpus&#39;: 2,
  &#39;vars&#39;: {&#39;bandpp&#39;: 1,
           &#39;npband&#39;: 1,
           &#39;npfft&#39;: 1,
           &#39;npimage&#39;: 1,
-          &#39;npkpt&#39;: 5,
+          &#39;npkpt&#39;: 2,
           &#39;npspinor&#39;: 1}}
 
 </pre>
@@ -13984,12 +13719,14 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
-<li>python will select the "optimal" configuration according to some criterion and constraints e.g. exclusive node allocation</li>
-<li>Crucial for implementing automatic $GW$ calculations</li>
-<li>Supporting <em>autoparal</em> for all possible cases is not trivial. </li>
-<li>For new developments (e.g. EPH) we prefer to implement smart logic in fortran </li>
+<li>python will select the "optimal" configuration according to some criterion and additional constraints 
+specified by the user <em>e.g.</em> exclusive node allocation</li>
 </ul>
-
+<!--
+* Crucial for implementing automatic $GW$ calculations but...
+* Supporting *autoparal* for all possible cases is not trivial. 
+* For new developments (e.g. EPH) we prefer to implement smart logic in fortran 
+-->
 </div>
 </div>
 </div></section><section>
@@ -14002,7 +13739,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_phperts</span><span class="p">(</span><span class="n">qpt</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -14018,7 +13755,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[14]:</div>
+    <div class="prompt output_prompt">Out[10]:</div>
 
 
 
@@ -14043,7 +13780,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">inp</span><span class="o">.</span><span class="n">abiget_irred_strainperts</span><span class="p">()</span>
@@ -14059,7 +13796,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[15]:</div>
+    <div class="prompt output_prompt">Out[11]:</div>
 
 
 
@@ -14085,6 +13822,7 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li>DFPT perturbations are independent hence jobs can be executed in parallel</li>
+<li>Handling errors in calculations with datasets is not trivial --&gt; Divide and conquer approach</li>
 <li>These methods represent the <strong>building block</strong> to generate workflows at runtime.<!-- div class="alert alert-info"> </div --></li>
 </ul>
 
@@ -14094,15 +13832,16 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<center><img src="./assets/how_does_it_work.jpg" width="50%" align="center"></center><ul>
-<li>ABINIT and AbiPy communicate through Yaml docs and netcdf files</li>
-<li>AbiPy uses the protocol to:<ul>
+<center><img src="./assets/how_does_it_work.jpg" width="35%" align="center"></center><ul>
+<li>ABINIT and AbiPy communicate through Yaml docs in log and netcdf files</li>
+<li>AbiPy uses this protocol to:<ul>
 <li>generate input files</li>
 <li>handle errors</li>
 <li>implement high-level logic</li>
 </ul>
 </li>
 <li>Config options required to run/submit calculations are specified in <em>manager.yml</em> </li>
+<li>Programmatic interface to set number of MPI procs and job parameters</li>
 </ul>
 
 </div>
@@ -14111,106 +13850,29 @@ especially when symmetries and $\bf{k}$-points are involved</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Example-of-manager.yml-for-laptops-(shell-adapter)">Example of <em>manager.yml</em> for laptops (shell adapter)<a class="anchor-link" href="#Example-of-manager.yml-for-laptops-(shell-adapter)">&#182;</a></h2><hr>
-
-<div class="highlight"><pre><span></span><span class="nt">qadapters</span><span class="p">:</span>
-  <span class="c1"># List of qadapters objects </span>
-  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> 
-    <span class="nt">queue</span><span class="p">:</span>
-      <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shell</span>
-      <span class="nt">qname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
-    <span class="nt">job</span><span class="p">:</span>
-       <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
-       <span class="nt">pre_run</span><span class="p">:</span> 
-           <span class="c1"># abinit exec must be in $PATH</span>
-           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">export PATH=$HOME/git_repos/abinit/_build/src/98_main:$PATH</span>
-    <span class="nt">limits</span><span class="p">:</span>
-       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30:00</span>
-       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-    <span class="nt">hardware</span><span class="p">:</span>
-       <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-       <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-       <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-       <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4Gb</span>
-</pre></div>
-<ul>
-<li><p>Examples of configuration files for clusters available <a href="https://abinit.github.io/abipy/workflows/manager_examples.html">here</a></p>
-</li>
-<li><p>Use <em>abirun.py doc_manager</em> to get documentation inside the shell</p>
-</li>
-</ul>
-
-</div>
-</div>
-</div><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="An-example-for-a-Slurm-based-cluster">An example for a Slurm-based cluster<a class="anchor-link" href="#An-example-for-a-Slurm-based-cluster">&#182;</a></h2><hr>
-
-<div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span> <span class="nl">&amp;hardware</span>
-   <span class="nt">num_nodes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
-   <span class="nt">sockets_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-   <span class="nt">cores_per_socket</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-   <span class="nt">mem_per_node</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">95Gb</span>
-
-<span class="nt">job</span><span class="p">:</span> <span class="nl">&amp;job</span>
-    <span class="nt">mpi_runner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mpirun</span>
-    <span class="nt">modules</span><span class="p">:</span> <span class="c1"># Load modules used to compile Abinit </span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">intel/2017b</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">netCDF-Fortran/4.4.4-intel-2017b</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">abinit_8.11</span>
-    <span class="nt">pre_run</span><span class="p">:</span> <span class="s">&quot;ulimit</span><span class="nv"> </span><span class="s">-s</span><span class="nv"> </span><span class="s">unlimited&quot;</span>
-
-<span class="c1"># Slurm options.</span>
-<span class="nt">qadapters</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">priority</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">queue</span><span class="p">:</span>
-       <span class="nt">qtype</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">slurm</span>
-       <span class="c1">#qname: Def</span>
-    <span class="nt">limits</span><span class="p">:</span>
-       <span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0-0:30:00</span>
-       <span class="nt">min_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-       <span class="nt">max_cores</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-       <span class="nt">min_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
-       <span class="nt">max_mem_per_proc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
-       <span class="nt">max_num_launches</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-    <span class="nt">hardware</span><span class="p">:</span> <span class="nv">*hardware</span>
-    <span class="nt">job</span><span class="p">:</span> <span class="nv">*job</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</aside></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Why-two-formats?">Why two formats?<a class="anchor-link" href="#Why-two-formats?">&#182;</a></h2><p>Each format has pros and cons:</p>
 <ul>
 <li><p><strong>YAML</strong></p>
 <ul>
-<li>Used for small documents:<ul>
+<li>Mainly used for small documents:<ul>
 <li>error messages in log file</li>
-<li><em>autoparal</em> section</li>
-<li>list of DFPT <em>perturbations</em> </li>
+<li><em>autoparal</em> section and list of DFPT <em>perturbations</em> </li>
 </ul>
 </li>
 <li>Easy to write with plain Fortran write (provided doc is <em>flat</em>) </li>
 <li>Not designed for big-data and performance  </li>
-<li>There are still speciaize cases in which Yaml can be used to represent results (cfr Theo's talk) but
-Yaml should be used when both human- and machine-readability are wanted!</li>
+<li>Yaml should be used when both human- and machine-readability are wanted (<em>cfr.</em> Theo's talk)</li>
 </ul>
 </li>
 <li><p><strong>Netcdf4</strong></p>
 <ul>
-<li>Portable binary format. Can handle big-data and <u>metadata</u> in an efficient way</li>
+<li>Portable binary format. Can handle big-data and <u>metadata</u> efficiently</li>
 <li>Support for parallel MPI-IO (HDF5)</li>
 <li><a href="https://www.etsf.eu/fileformats">ETSF-IO specifications</a> for crystalline structures, wavefunctions, densities…</li>
-<li>Still, ETSF-IO specs are not enough as we need to add <em>hdr_t</em> and lot of physical properties 
+<li>Still, ETSF-IO specs are not enough as we need <em>hdr_t</em> to restart. Besides many physical properties 
 are not covered by the standard</li>
-<li>A machine-readable format is also human-readable. Just put some python logic around it! </li>
+<li>A machine-readable format is also human-readable. Just put some python code around it!</li>
+<li>All technologies have pros and cons and <em>netcdf</em> is no exception: <em>netcdf</em> is array-oriented </li>
 </ul>
 </li>
 </ul>
@@ -14229,7 +13891,7 @@ are not covered by the standard</li>
 <li>Macros to call the error handler and MPI_ABORT to terminates all processes </li>
 <li>Never ever use plain Fortran <em>stop</em> in MPI codes </li>
 </ul>
-<h4 id="Yaml-doc-printed-to-log-file-(if-master)-and--__ABI_ABORT_FILE__">Yaml doc printed to log file (if master) and  <code>__ABI_ABORT_FILE__</code><a class="anchor-link" href="#Yaml-doc-printed-to-log-file-(if-master)-and--__ABI_ABORT_FILE__">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!ERROR</span>
+<h4 id="Yaml-doc-printed-to-log-file-and--ABI_ABORT_FILE">Yaml doc printed to log file and  <em><strong>ABI_ABORT_FILE</strong></em><a class="anchor-link" href="#Yaml-doc-printed-to-log-file-and--ABI_ABORT_FILE">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!ERROR</span>
 <span class="nt">src_file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">m_invars1.F90</span>
 <span class="nt">src_line</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">314</span>
 <span class="nt">mpi_rank</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
@@ -14238,9 +13900,9 @@ are not covered by the standard</li>
 <span class="nn">...</span>
 </pre></div>
 <ul>
-<li><em>src_file</em> and <em>str_line</em> added by CPP preprocessor (see <em>abi_common.h</em>)</li>
-<li><em>message</em>: Informative string for users. It might be used by AbiPy for quick fixes 
-although we prefer a more robust approach...</li>
+<li><em>src_file</em> and <em>str_line</em> added by CPP (see <em>abi_common.h</em>)</li>
+<li><em>message</em>: String meant for users. It might be used by AbiPy for quick fixes 
+although we usually prefer a more robust approach...</li>
 </ul>
 
 </div>
@@ -14257,10 +13919,10 @@ although we prefer a more robust approach...</li>
 <ul>
 <li><p>These classes bring metadata and/or imply some action at the Fortran level</p>
 </li>
-<li><p>The presence of the Yaml Error in the log file triggers specialized logic in python:</p>
+<li><p>The presence of the Yaml error in the <em>log</em> file triggers specialized python logic:</p>
 </li>
 </ul>
-<center><img src="./assets/dilatmx_2.png" width="25%" align="center"></center><ul>
+<center><img src="./assets/dilatmx_2.png" width="30%" align="center"></center><ul>
 <li>As usual, error handling requires some discipline 🧘...</li>
 </ul>
 
@@ -14273,8 +13935,6 @@ although we prefer a more robust approach...</li>
 <h2 id="Fortran-handler-based-on-YAML-+-netcdf">Fortran handler based on YAML + netcdf<a class="anchor-link" href="#Fortran-handler-based-on-YAML-+-netcdf">&#182;</a></h2><p></p><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">chkdilatmx</span><span class="p">(</span><span class="n">dt_chkdilatmx</span><span class="p">,</span> <span class="n">dilatmx</span><span class="p">,</span> <span class="n">rprimd</span><span class="p">,</span> <span class="n">rprimd_orig</span><span class="p">,</span> <span class="n">dilatmx_errmsg</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="nb">len_trim</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">then</span>
-<span class="k">  </span><span class="n">nerr_dilatmx</span> <span class="o">=</span> <span class="n">nerr_dilatmx</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">nerr_dilatmx</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span>
     <span class="c">! Write last structure before aborting so that we can restart from it.</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">my_rank</span> <span class="o">==</span> <span class="n">master</span><span class="p">)</span> <span class="k">then</span>
 <span class="k">      </span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite_path</span><span class="p">(</span><span class="s2">&quot;out_DILATMX_STRUCT.nc&quot;</span><span class="p">)))</span>
@@ -14284,12 +13944,11 @@ although we prefer a more robust approach...</li>
       <span class="s1">&#39;Dilatmx has been exceeded too many times (&#39;</span><span class="p">,</span> <span class="n">nerr_dilatmx</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span><span class="n">ch10</span><span class="p">,</span> <span class="p">&amp;</span>
       <span class="s1">&#39;Restart calculation from larger lattice vectors and/or a larger dilatmx&#39;</span>
     <span class="n">MSG_ERROR_CLASS</span><span class="p">(</span><span class="n">dilatmx_errmsg</span><span class="p">,</span> <span class="s2">&quot;DilatmxError&quot;</span><span class="p">)</span>
-  <span class="k">end if</span>
 <span class="k">end if</span>
 </pre></div>
 <ul>
-<li>If <code>!DilatmxError</code> in log file, AbiPy expects a ncfile with the last structure</li>
-<li>Note MPI_BARRIER to guarantee that the ncfile is written before MPI_ABORT</li>
+<li>If <code>!DilatmxError</code> in <em>log</em> file, AbiPy expects a <em>ncfile</em> with the last structure</li>
+<li>Note MPI_BARRIER to guarantee that the <em>ncfile</em> is written before MPI_ABORT</li>
 </ul>
 
 </div>
@@ -14298,14 +13957,44 @@ although we prefer a more robust approach...</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Netcdf-files-in-Abinit">Netcdf files in Abinit<a class="anchor-link" href="#Netcdf-files-in-Abinit">&#182;</a></h2><h4 id="Phylosophy">Phylosophy<a class="anchor-link" href="#Phylosophy">&#182;</a></h4><ul>
-<li>A ncfile is a container of "objects"</li>
+<h2 id="How-do-we-understand-that-the-job-completed-successfully?">How do we understand that the job completed successfully?<a class="anchor-link" href="#How-do-we-understand-that-the-job-completed-successfully?">&#182;</a></h2><p></p><div class="highlight"><pre><span></span><span class="nn">---</span> <span class="kt">!FinalSummary</span>
+<span class="nt">program</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">abinit</span>
+<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8.11.6</span>
+<span class="nt">start_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:01:14 2019</span>
+<span class="nt">end_datetime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sat Mar 30 23:04:04 2019</span>
+<span class="nt">overall_cpu_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">168.8</span>
+<span class="nt">overall_wall_time</span><span class="p">:</span>         <span class="l l-Scalar l-Scalar-Plain">169.7</span>
+<span class="nt">exit_requested_by_user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no</span> 
+<span class="nt">timelimit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">pseudos</span><span class="p">:</span> 
+    <span class="nt">Li  </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9517c0b7d24d4898578b8627ce68311d</span>
+    <span class="nt">F   </span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14cf65a61ba7320a86892d2f062b1f44</span>
+<span class="nt">usepaw</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">mpi_procs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">omp_threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">num_warnings</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">num_comments</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">73</span>
+<span class="nn">...</span>
+</pre></div>
+<ul>
+<li>Understanding whether the job is still running or stuck is more difficult since there's no "official protocol" implemented by resource managers</li>
+<li>AbiPy analyzes <em>stderr</em> files and uses heuristic rules to detect this kind of problem</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Netcdf-files-in-Abinit">Netcdf files in Abinit<a class="anchor-link" href="#Netcdf-files-in-Abinit">&#182;</a></h2><h4 id="Philosophy">Philosophy<a class="anchor-link" href="#Philosophy">&#182;</a></h4><ul>
+<li>A <em>ncfile</em> is a container of "objects"</li>
 <li>Each object implements the <em>ncwrite</em> method to dump its status</li>
 <li>Client code uses these methods to implement <em>composition</em></li>
 <li>A <em>GSR.nc</em> file, for instance, has a <em>crystal</em>, an <em>header</em>, <em>ebands</em> and <em>results_gs</em></li>
 </ul>
-<h4 id="Fortran-code-for-GSR.nc">Fortran code for GSR.nc<a class="anchor-link" href="#Fortran-code-for-GSR.nc">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="c">! Write crystal and band structure energies.</span>
-<span class="n">ncerr</span> <span class="o">=</span> <span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<h4 id="Fortran-code-for-GSR.nc">Fortran code for GSR.nc<a class="anchor-link" href="#Fortran-code-for-GSR.nc">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">ncerr</span> <span class="o">=</span> <span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<span class="c">! Write hdr, crystal and band structure</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">fform_den</span><span class="p">,</span> <span class="n">nc_define</span><span class="o">=</span><span class="p">.</span><span class="n">True</span><span class="p">.)</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">crystal</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">ebands</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
@@ -14313,10 +14002,10 @@ although we prefer a more robust approach...</li>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">results_gs</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">ecut</span><span class="p">,</span> <span class="n">dtset</span><span class="p">%</span><span class="n">pawecutdg</span><span class="p">))</span>
 <span class="n">ncerr</span> <span class="o">=</span> <span class="n">nf90_close</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
 </pre></div>
-<h4 id="The-same-pattern-can-be-used-for-other-files">The same pattern can be used for other files<a class="anchor-link" href="#The-same-pattern-can-be-used-for-other-files">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;out_PHDOS.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<h4 id="The-same-pattern-can-be-used-for-other-files:">The same pattern can be used for other files:<a class="anchor-link" href="#The-same-pattern-can-be-used-for-other-files:">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nctk_open_create</span><span class="p">(</span><span class="n">ncid</span><span class="p">,</span> <span class="s2">&quot;out_PHDOS.nc&quot;</span><span class="p">,</span> <span class="n">xmpi_comm_self</span><span class="p">))</span>
+<span class="c">! PHDOS.nc has a crystalline structure + DOS values</span>
 <span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">cryst</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">))</span>
 <span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">phdos</span><span class="p">%</span><span class="n">ncwrite</span><span class="p">(</span><span class="n">ncid</span><span class="p">)</span>
-<span class="n">NCF_CHECK</span><span class="p">(</span><span class="n">nf90_close</span><span class="p">(</span><span class="n">ncid</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -14325,214 +14014,84 @@ although we prefer a more robust approach...</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Advantages">Advantages<a class="anchor-link" href="#Advantages">&#182;</a></h4><ul>
-<li>Code reuse: implement extra logic just for the <em>extra data</em></li>
-<li>Standardized format for structure, hdr, crystal, ebands ...</li>
-<li>Post-processing tools need metadata (e.g. structure) to interpret the data </li>
+<h4 id="Advantages-of-ncwrite-API:">Advantages of <em>ncwrite</em> API:<a class="anchor-link" href="#Advantages-of-ncwrite-API:">&#182;</a></h4><ul>
+<li>Code reuse. Need to implement extra logic only for <em>extra data</em></li>
+<li>Standardized format for <em>hdr</em>, <em>crystal</em>, <em>ebands</em> ...</li>
+<li>Post-processing tools need metadata (<em>e.g.</em> <em>crystal</em>) to interpret the data </li>
 <li>Less boiler-plate code to implement parsers and post-processing tools</li>
 </ul>
-<h4 id="Abipy-implementation-based-on-mixins">Abipy implementation based on mixins<a class="anchor-link" href="#Abipy-implementation-based-on-mixins">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GsrFile</span><span class="p">(</span><span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+<h4 id="Abipy-implementation-based-on-mixins:">Abipy implementation based on mixins:<a class="anchor-link" href="#Abipy-implementation-based-on-mixins:">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GsrFile</span><span class="p">(</span><span class="n">AbinitNcFile</span><span class="p">,</span> <span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This file contains ground-state results&quot;&quot;&quot;</span>
 
-<span class="k">class</span> <span class="nc">FatBandsFile</span><span class="p">(</span><span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">FatBandsFile</span><span class="p">(</span><span class="n">AbinitNcFile</span><span class="p">,</span> <span class="n">Has_Header</span><span class="p">,</span> <span class="n">Has_Structure</span><span class="p">,</span> <span class="n">Has_ElectronBands</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This file contains LM-projected bands&quot;&quot;&quot;</span>
 </pre></div>
-<h4 id="Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-Python-language">Easy-to-use API that plays well with the dynamic nature of the Python language<a class="anchor-link" href="#Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-Python-language">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;out_GSR.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_FATBANDS.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_WFK.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_SIGEPH.nc&quot;</span><span class="p">):</span>
+<h4 id="Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-python-language">Easy-to-use API that plays well with the dynamic nature of the python language<a class="anchor-link" href="#Easy-to-use-API-that-plays-well-with-the-dynamic-nature-of-the-python-language">&#182;</a></h4><p></p><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;out_GSR.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_FATBANDS.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_WFK.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;out_SIGEPH.nc&quot;</span><span class="p">):</span>
     <span class="n">abifile</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">abifile</span><span class="o">.</span><span class="n">ebands</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsr</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">abiopen</span><span class="p">(</span><span class="s2">&quot;si_scf_GSR.nc&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;npwarr&quot;</span><span class="p">,</span> <span class="s2">&quot;pspso&quot;</span><span class="p">,</span> <span class="s2">&quot;ecutsm&quot;</span><span class="p">,</span> <span class="s2">&quot;codvsn&quot;</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">gsr</span><span class="o">.</span><span class="n">hdr</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>npwarr [181 178 193 195 180 177 193 196 193 189 193 186 202 195 192 190 192 198
- 198 194 190 194 195 194 197 198 197 196 200]
-pspso [0]
-ecutsm 0.0
-codvsn 8.0.6
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Objects are constructed lazily from file</span>
-<span class="c1">#print(gsr.hdr.to_string())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div><aside class="notes">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsr</span><span class="o">.</span><span class="n">energy_terms</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[18]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Term                  Value
-e_localpsp            -68.62575616682041 eV
-e_eigenvalues         4.453251781809304 eV
-e_ewald               -226.94266538122858 eV
-e_hartree             14.989583868349118 eV
-e_corepsp             2.262480246606245 eV
-e_corepspdc           0.0 eV
-e_kinetic             80.6603511758275 eV
-e_nonlocalpsp         52.15353045099117 eV
-e_entropy             0.0 eV
-entropy               0.0 eV
-e_xc                  -95.73399250916707 eV
-e_xcdc                0.0 eV
-e_paw                 0.0 eV
-e_pawdc               0.0 eV
-e_elecfield           0.0 eV
-e_magfield            0.0 eV
-e_fermie              5.5984532787385985 eV
-e_sicdc               0.0 eV
-e_exactX              0.0 eV
-h0                    0.0 eV
-e_electronpositron    0.0 eV
-edc_electronpositron  0.0 eV
-e0_electronpositron   0.0 eV
-e_monopole            0.0 eV</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-</aside><aside class="notes">
-
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">This function returns an <em>AbiFile</em> object provinding access to physical properties.<a class="anchor-link" href="#This-function-returns-an-AbiFile-object-provinding-access-to-physical-properties.">&#182;</a></h4><p>Conventions:</p>
+<center><img src="./assets/technical_problems.jpg" width="85%" align="center"></center><ul>
+<li>Restart capabilities and IO</li>
+<li>Extending TesSuite with AbiPy</li>
+<li>TestSuite is too gentle but clusters are dark and full of errors 🐉🐉🐉</li>
+<li>Using AbiPy to benchmark ABINIT</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Restart-capabilities-and-IO">Restart capabilities and IO<a class="anchor-link" href="#Restart-capabilities-and-IO">&#182;</a></h2><h4 id="Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">Clean exit with <em>--timeline</em> and smart-io mode (prtwf -1)<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode-(prtwf--1)">&#182;</a></h4><p><p></p></p>
+<div class="highlight"><pre><span></span>$ cat job.sh
+<span class="c1">#SBATCH --time=12:00:00</span>
+
+abinit --timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
+</pre></div>
 <ul>
-<li><em>abifile.structure</em> ➝ crystalline structure (subclass of pymatgen <em>Structure</em>)</li>
-<li><em>abifile.ebands</em> ➝ electron band energies</li>
-<li><em>abifile.ebands.kpoints</em> ➝ list of k-points (k-path, IBZ) </li>
-<li><em>abifile.phbands</em> ➝ phonon frequencies and displacements</li>
+<li>Available for iterative algorithms (Relax, Scf)</li>
+<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching so that restart   is possible</li>
+<li><em>prtwf</em> -1: Print WFK only if <em>not converged</em> to reduce IO-pressure and avoid disk-quota</li>
+<li>Abipy will restart the job from the previous results </li>
 </ul>
-<p>Several AbiPy objects provide <em>plot</em> methods returning <a href="https://matplotlib.org/"><em>matplotlib</em></a> figures</p>
-
-</div>
-</div>
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="./assets/mongoengine_logo.png" width="50%" align="center"></p>
-<h4 id="Document-Object-Mapper">Document-Object Mapper<a class="anchor-link" href="#Document-Object-Mapper">&#182;</a></h4><ul>
-<li>Like ORM but for document databases</li>
-<li>Mixins for standard quantities</li>
-<li>Document associated with workflows</li>
-<li>Standardized output</li>
+<h4 id="Restart-from-netcdf-file">Restart from netcdf file<a class="anchor-link" href="#Restart-from-netcdf-file">&#182;</a></h4><ul>
+<li>EPH approach: Save results to SIGPEH with table <em>done(ikpt, spin)</em></li>
 </ul>
-<p>abiflows.database.mongoengine modules:</p>
+<h4 id="Unfortunately:">Unfortunately:<a class="anchor-link" href="#Unfortunately:">&#182;</a></h4><ul>
+<li>Not all the drivers support restart e.g. GW or BSE</li>
+<li>Output of certain files may use smart-io mode by default <em>e.g.</em> first-order WFK</li>
+<li>The number of file descriptors <em>per user</em> is limited. Should make list of files that 
+may be removed e.g. _OUT.nc </li>
+</ul>
 
-</div>
-</div>
-</div>
-</aside><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">How to recostruct AbiPy objects from a MondoDb database<a class="anchor-link" href="#How-to-recostruct-AbiPy-objects-from-a-MondoDb-database">&#182;</a></h3><p></p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abiflows.database.mongoengine.abinit_results</span> <span class="kn">import</span> <span class="n">PhononResult</span>
-
-<span class="c1"># Find results for SiC</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">PhononResult</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">mp_id</span><span class="o">=</span><span class="s1">&#39;mp-8062&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
-
-<span class="c1"># Get DDB object from the database.</span>
-<span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">abinit_output</span><span class="o">.</span><span class="n">gs_gsr</span><span class="o">.</span><span class="n">abiopen</span><span class="p">()</span> <span class="k">as</span> <span class="n">gsr</span><span class="p">:</span>
-    <span class="n">gsr</span><span class="o">.</span><span class="n">ebands</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-
-<span class="c1"># Get DDB object from the database.</span>
-<span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">abinit_output</span><span class="o">.</span><span class="n">ddb</span><span class="o">.</span><span class="n">abiopen</span><span class="p">()</span> <span class="k">as</span> <span class="n">ddb</span><span class="p">:</span> 
-    <span class="c1"># Run anaddb </span>
-    <span class="n">phbst</span><span class="p">,</span> <span class="n">phdos</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">ngqpt</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span> 
-    <span class="c1"># Use AbiPy API</span>
-    <span class="n">phbst</span><span class="o">.</span><span class="n">phbands</span><span class="o">.</span><span class="n">plot_with_phdos</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">phdos</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm-1&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</aside></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<center><img src="./assets/technical_problems.jpg" width="55%" align="center"></center>
 </div>
 </div>
 </div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Using-AbiPy-to-implement-unit-tests-with-extra-logic">Using AbiPy to implement unit tests with extra logic<a class="anchor-link" href="#Using-AbiPy-to-implement-unit-tests-with-extra-logic">&#182;</a></h4><ul>
+<h2 id="Extending-TestSuite-with-AbiPy">Extending TestSuite with AbiPy<a class="anchor-link" href="#Extending-TestSuite-with-AbiPy">&#182;</a></h2><ul>
 <li>More that 1200 tests in <em>TestSuite</em> still the infrastructure <u>is not bulletproof</u></li>
-<li>We assume the reference files are <em>always</em> correct but mistakes happen and there are errors that can be easily spotted by analyzing the raw data</li>
+<li>We assume the reference results are <em>always</em> correct but<ul>
+<li>mistakes may happen when updating refs</li>
+<li>in comes cases, inconsistencies can be spotted by analyzing the raw data</li>
+</ul>
+</li>
 </ul>
 <h4 id="Based-on-a-true-story:">Based on a true story:<a class="anchor-link" href="#Based-on-a-true-story:">&#182;</a></h4><ul>
-<li>a bug in the calculation of the ph-DOS entered trunk/develop</li>
-<li>refs were updated so buildbot was happy!</li>
-<li>fortunately, AbiPy detected the problem because there was a test based </li>
-<li>on the post-processing of the numerical results</li>
+<li>A bug in the calculation of the atom-projected phonon DOS entered trunk/develop</li>
+<li>All the refs were updated so buildbot was happy!</li>
+<li>I had a look at the diffs but it was like finding needle in the haystack</li>
+<li>Fortunately, AbiPy detected the problem because there was a test based 
+on the post-processing of the numerical results...</li>
 </ul>
 
 </div>
@@ -14546,13 +14105,11 @@ e_monopole            0.0 eV</pre>
 
 <span class="k">for</span> <span class="n">dos_method</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;tetra&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
     <span class="c1"># Get phonon bands and dos with anaddb.</span>
-    <span class="n">phbands_file</span><span class="p">,</span> <span class="n">phdos_file</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">dos_method</span><span class="o">=</span><span class="n">dos_method</span><span class="p">)</span>
-
-    <span class="n">phbands</span><span class="p">,</span> <span class="n">phdos</span> <span class="o">=</span> <span class="n">phbands_file</span><span class="o">.</span><span class="n">phbands</span><span class="p">,</span> <span class="n">phdos_file</span><span class="o">.</span><span class="n">phdos</span>
-    <span class="n">natom3</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phbands</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+    <span class="n">phbst_nc</span><span class="p">,</span> <span class="n">phdos_nc</span> <span class="o">=</span> <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">dos_method</span><span class="o">=</span><span class="n">dos_method</span><span class="p">)</span>
+    <span class="n">phbands</span><span class="p">,</span> <span class="n">phdos</span> <span class="o">=</span> <span class="n">phbst_nc</span><span class="o">.</span><span class="n">phbands</span><span class="p">,</span> <span class="n">phdos_nc</span><span class="o">.</span><span class="n">phdos</span>
 
     <span class="c1"># Total PHDOS should integrate to 3 * natom</span>
-    <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="n">natom3</span><span class="p">)</span>
+    <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">phbands</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="c1"># Summing projected DOSes over types should give the total DOS.</span>
     <span class="n">pj_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pjdos</span><span class="o">.</span><span class="n">integral_value</span> <span class="k">for</span> <span class="n">pjdos</span> <span class="ow">in</span> <span class="n">phdos_file</span><span class="o">.</span><span class="n">pjdos_symbol</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -14563,65 +14120,36 @@ e_monopole            0.0 eV</pre>
     <span class="n">tot_dos</span> <span class="o">=</span> <span class="n">abilab</span><span class="o">.</span><span class="n">Function1D</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
     <span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">phdos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">,</span> <span class="n">tot_dos</span><span class="o">.</span><span class="n">integral_value</span><span class="p">)</span>
 </pre></div>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>The idea is not new: FFTW3 built-in tests use this kind of internal consistency check</li>
-<li>Implementing this kind of tests in Fortran is a real pain (I did it for the FFT machinery in <em>fftprof</em>)</li>
-<li>python and the AbiPy API represent a very flexible approach to implement this kind of agnostic tests</li>
-<li>Want to run the test in parallel with MPI? Just add:<p></p></li>
-</ul>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">mpi_procs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">23</span><span class="p">):</span>
+<h2 id="Want-to-run-the-test-in-parallel-with-MPI?-Just-add:">Want to run the test in parallel with MPI? Just add:<a class="anchor-link" href="#Want-to-run-the-test-in-parallel-with-MPI?-Just-add:">&#182;</a></h2><p></p><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">mpi_procs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">23</span><span class="p">):</span>
     <span class="n">ddb</span><span class="o">.</span><span class="n">anaget_phbst_and_phdos_files</span><span class="p">(</span><span class="n">dos_method</span><span class="o">=</span><span class="n">dos_method</span><span class="p">,</span> <span class="n">mpi_procs</span><span class="o">=</span><span class="n">mpi_procs</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Clean-exit-with---timeline-and-smart-io-mode">Clean exit with <em>--timeline</em> and smart-io mode<a class="anchor-link" href="#Clean-exit-with---timeline-and-smart-io-mode">&#182;</a></h2><p></p><div class="highlight"><pre><span></span>$ cat job.sh
-
-<span class="c1">#!/bin/bash</span>
-<span class="c1">#SBATCH --ntasks=48</span>
-<span class="c1">#SBATCH --time=12:00:00</span>
-
-abinit --timelimit <span class="m">12</span>:00:00 &lt; run.file &gt; run.log <span class="m">2</span>&gt; run.err
-</pre></div>
-<ul>
-<li>Available for iterative algorithms (Relax, Scf, Nscf?)</li>
-<li>Compute wall-time required by one iteration, save intermediate results if timelimit is approaching</li>
-<li>Abipy will restart the job from the previous results</li>
-<li>timelimit and prtwf -1 to reduce IO-pressure and avoid disk-quota hell </li>
-</ul>
-<p>Discuss IO pressure, too many files</p>
-
-</div>
-</div>
 </div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="TestSuite-is-too-gentle-whereas-the-world-is-dark-and-full-of-errors--&#128009;&#128009;&#128009;">TestSuite is too gentle whereas the world is dark and full of errors  &#128009;&#128009;&#128009;<a class="anchor-link" href="#TestSuite-is-too-gentle-whereas-the-world-is-dark-and-full-of-errors--&#128009;&#128009;&#128009;">&#182;</a></h3><blockquote><p>Stress testing involves testing beyond normal operational capacity, 
-  often to a breaking point, in order to observe the results (<em>wikipedia</em>)</p>
-</blockquote>
-<p>Reasons can include:</p>
+<h3 id="TestSuite-is-too-gentle-but-clusters-are-dark-and-full-of-errors--&#128009;&#128009;&#128009;">TestSuite is too gentle but clusters are dark and full of errors  &#128009;&#128009;&#128009;<a class="anchor-link" href="#TestSuite-is-too-gentle-but-clusters-are-dark-and-full-of-errors--&#128009;&#128009;&#128009;">&#182;</a></h3><blockquote><p>Stress testing involves testing beyond normal operational capacity, 
+often to a breaking point in order to:</p>
 <ul>
-<li>to determine breaking points or safe usage limits</li>
-<li>to confirm intended specifications are being met</li>
-<li>to determine modes of failure (how exactly a system fails)</li>
+<li>determine breaking points or safe usage limits</li>
+<li>confirm intended specifications are being met</li>
+<li><p>determine how exactly a system fails</p>
+<p>(<em>wikipedia</em>)</p>
+</li>
 </ul>
-<p>Example: <em>ionmov 22</em>, see Guido's talk</p>
-<ul>
-<li>AbiPy uses integration tests to check <em>ErrorHandlers</em>. The code is supposed to 
-<strong>fail several times</strong> before giving the right answer. </li>
-<li>Is it possible to implement this pattern in <em>TestSuite</em>?</li>
+</blockquote>
+<h4 id="Questions:">Questions:<a class="anchor-link" href="#Questions:">&#182;</a></h4><ul>
+<li>How many tests do we usually perform before saying that one algorithm is clearly superior to another one?</li>
+<li>Do we have a suite of input systems designed to reveal weaknesses in algorithms?</li>
+<li>Is it possible to handle some of these errors at the Fortran level?</li>
+</ul>
+<h4 id="Stress-testing-is-not-easy-because-one-needs-logic-to-cope-with-errors">Stress testing is not easy because one needs logic to cope with errors<a class="anchor-link" href="#Stress-testing-is-not-easy-because-one-needs-logic-to-cope-with-errors">&#182;</a></h4><ul>
+<li>AbiPy uses integration tests to check <em>ErrorHandlers</em> in which the code is supposed to 
+<strong>fail several times</strong> before giving the right answer.</li>
+<li>I'm not claiming that stress testing with AbiPy is gonna be easy, but it's clear that 
+<em>TestSuite</em> was not designed with this goal in mind.  </li>
 </ul>
 
 </div>
@@ -14650,15 +14178,14 @@ of MPI/OMP and input variables?</li>
      <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">8</span> <span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">8</span> <span class="p">),</span>  <span class="c1"># 128</span>
      <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">8</span> <span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>  <span class="c1"># 256</span>
      <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>  <span class="c1"># 512</span>
-     <span class="nb">dict</span><span class="p">(</span><span class="n">npkpt</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npband</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">npfft</span><span class="o">=</span><span class="mi">32</span><span class="p">),</span>  <span class="c1"># 1024</span>
 <span class="p">]</span>
 
-<span class="n">omp_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># List of OpenMP threads</span>
+<span class="n">omp_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># List of OpenMP threads</span>
 
 <span class="n">flow</span> <span class="o">=</span> <span class="n">BenchmarkFlow</span><span class="p">()</span>
-<span class="n">template</span> <span class="o">=</span> <span class="n">make_input</span><span class="p">()</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">generate_input</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">wfoptalg</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">wfoptalg</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">]:</span>
     <span class="n">work</span> <span class="o">=</span> <span class="n">flowtk</span><span class="o">.</span><span class="n">Work</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">omp_threads</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">pconfs</span><span class="p">,</span> <span class="n">omp_list</span><span class="p">):</span>
         <span class="n">mpi_procs</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
@@ -14666,53 +14193,20 @@ of MPI/OMP and input variables?</li>
         <span class="n">inp</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">new_with_vars</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">wfoptalg</span><span class="o">=</span><span class="n">wfoptalg</span><span class="p">)</span>
         <span class="n">work</span><span class="o">.</span><span class="n">register_scf_task</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">manager</span><span class="o">=</span><span class="n">manager</span><span class="p">)</span>
     <span class="n">flow</span><span class="o">.</span><span class="n">register_work</span><span class="p">(</span><span class="n">work</span><span class="p">)</span>
-
 <span class="n">flow</span><span class="o">.</span><span class="n">allocate</span><span class="p">()</span>
 </pre></div>
 
 </div>
 </div>
-</div><aside class="notes">
-
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For years, I was not able to use strings in datasets because of the infamous bindings!</p>
-<p>getwfk_path</p>
-
-</div>
-</div>
-</div>
-</aside></section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h2><ul>
-<li><p>The <em>ab-initio</em> community is migrating to <em>python</em> to implement:</p>
-<ul>
-<li>Pre-processing and post-processing tools</li>
-<li>Web-based technologies to analyze/visualize data (<em>e.g.</em> <em>jupyter</em> notebooks …) </li>
-<li>High-level logic for scientific workflows and <em>high-throughput</em> applications</li>
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h2><ul>
+<li>This talk has no conclusions because we have not yet found optimal solutions to the problems 
+mentioned in the previous slides except one:</li>
 </ul>
-</li>
-<li><p><u>Difficulties</u> for users:</p>
-<ul>
-<li>Installation of big software stack (C, C++, Fortran, Python, Javascript …)</li>
-<li>Multiple technologies under the hood (databases, <em>JSON</em>, <em>HDF5</em>, <em>MPI/OMP</em> …) </li>
-<li>Users are supposed to be familiar with programming techniques</li>
-</ul>
-</li>
-<li><p><u>Advantages</u> for users:</p>
-<ul>
-<li>Traditional GUIs are still useful but researchers sometimes need programmatic 
-interfaces to analyze raw data</li>
-<li>Several <em>python</em> packages to boost productivity and do better science</li>
-</ul>
-</li>
-</ul>
-<blockquote><p>"An investment in knowledge pays the best interest" (B. Franklin)</p>
-</blockquote>
-
+<h2 id="Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">Different Problems Require Different Solutions Based On Different Technologies<a class="anchor-link" href="#Different-Problems-Require-Different-Solutions-Based-On-Different-Technologies">&#182;</a></h2>
 </div>
 </div>
 </div></section></section>
